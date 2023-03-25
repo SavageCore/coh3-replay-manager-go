@@ -1,0 +1,43 @@
+version: "3"
+
+tasks:
+  build:
+    desc: Build the app
+    deps:
+      - lint
+      - assets
+    cmds:
+      - go build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -buildmode=exe -o bin/coh3-replay-manager.exe
+    env:
+      CGO_ENABLED: 1
+      CC: C:\msys64\mingw64\bin\gcc.exe
+  dev:
+    deps:
+      - assets
+    cmds:
+      - air -c .air.toml
+    silent: false
+  release:
+    deps:
+      - lint
+      - assets
+    cmds:
+      - goreleaser release --clean
+    dotenv: [".env"]
+  release-snapshot:
+    deps:
+      - lint
+      - assets
+    cmds:
+      - goreleaser release --snapshot --clean
+    dotenv: [".env"]
+  assets:
+    cmds:
+      - rsrc -ico assets/icons/icon.ico -o icon.syso
+      - go-bindata assets/...
+      - echo "//lint:file-ignore SA1019,ST1005 Ignore it's generated" > tempfile
+      - cat $PWD\\bindata.go | tee -a tempfile >/dev/null 2>&1
+      - mv tempfile $PWD\\bindata.go
+  lint:
+    cmds:
+      - staticcheck

@@ -1,0 +1,10 @@
+tmp/
+bin/
+node_modules/
+dist/
+
+*.syso
+bindata.go
+
+.env
+*.reg

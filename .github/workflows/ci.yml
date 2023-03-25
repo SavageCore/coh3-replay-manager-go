@@ -1,0 +1,35 @@
+name: "CI"
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+jobs:
+  test:
+    runs-on: windows-latest
+    name: "Run Staticcheck"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - name: Install rsrc
+        run: go install github.com/akavel/rsrc@latest
+      - name: Install go-bindata
+        run: go install github.com/go-bindata/go-bindata/...@latest
+      - name: Generate icon.syso file
+        run: rsrc -ico assets/icons/icon.ico -o icon.syso
+      - name: Generate bindata.go file
+        run: go-bindata assets/...
+      - name: Add lint ignore to bindata.go
+        run: |
+          type bindata.go | Out-File bindata.temp
+          echo "//lint:file-ignore SA1019,ST1005 Ignore it's generated" > bindata.go
+          Get-Content bindata.temp | Out-File bindata.go -Append
+          rm bindata.temp
+      - uses: dominikh/staticcheck-action@v1.3.0
+        with:
+          version: "2023.1.3"
