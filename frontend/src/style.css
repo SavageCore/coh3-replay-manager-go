@@ -1,0 +1,12 @@
+body.dark {
+    --bg-color: #1C242D;
+    --bg-secondary-color: #242F39;
+    --font-color: #F8F9FA;
+    --color-grey: #6c757d;
+    --color-darkGrey: #343a40;
+}
+
+#app {
+    height: 100vh;
+    text-align: center;
+}

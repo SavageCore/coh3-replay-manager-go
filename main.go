@@ -4,6 +4,7 @@ import (
 	"coh3-replay-manager-go/modules/game"
 	"coh3-replay-manager-go/modules/replay"
 	"coh3-replay-manager-go/modules/utils"
+	"embed"
 	"fmt"
 	"io"
 	"os"
@@ -17,9 +18,18 @@ import (
 	"github.com/fynelabs/selfupdate"
 	"github.com/gen2brain/beeep"
 	"github.com/getlantern/systray"
+
+	"github.com/wailsapp/wails/v2"
+	"github.com/wailsapp/wails/v2/pkg/options"
+	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
 )
 
 const CurrentVersion = "v0.1.4"
+
+//go:embed all:frontend/dist
+var assets embed.FS
+
+// var wv webview.WebView
 
 func main() {
 	if os.Getenv("DEV_MODE") != "true" {
@@ -36,6 +46,8 @@ func main() {
 
 	// Check if the app was opened with a command line argument
 	if len(os.Args) > 1 && strings.HasPrefix(os.Args[1], "coh3-replay-manager-go://") {
+		// Print
+		fmt.Println("App opened with command line argument:", os.Args[1])
 		// Get the string containing the replay id and game version from the command line argument (without the protocol)
 		input := strings.TrimPrefix(os.Args[1], "coh3-replay-manager-go://")
 
@@ -45,7 +57,32 @@ func main() {
 		return
 	}
 
-	systray.Run(onReady, onExit)
+	systray.Register(onReady, onExit)
+
+	// Create an instance of the app structure
+	app := NewApp()
+
+	// Create application with options
+	err := wails.Run(&options.App{
+		Title:  "Company of Heroes 3 Replay Manager",
+		Width:  1024,
+		Height: 768,
+		AssetServer: &assetserver.Options{
+			Assets: assets,
+		},
+		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
+		OnStartup:        app.startup,
+		OnShutdown:       app.shutdown,
+		Bind: []interface{}{
+			app,
+		},
+		StartHidden:       false,
+		HideWindowOnClose: true,
+	})
+
+	if err != nil {
+		println("Error:", err.Error())
+	}
 }
 
 func onReady() {
@@ -55,7 +92,7 @@ func onReady() {
 		return
 	}
 
-	app := &autostart.App{
+	autostartApp := &autostart.App{
 		Name: "coh3-replay-manager-go",
 		Exec: []string{appPath},
 	}
@@ -67,11 +104,12 @@ func onReady() {
 	systray.SetTooltip("Company of Heroes 3 Replay Manager")
 
 	mSetStartup := systray.AddMenuItem("Launch on startup", "Start this app when your computer starts")
+	mReplayListView := systray.AddMenuItem("View replays", "View saved and downloaded replays")
 	systray.AddSeparator()
 	mAbout := systray.AddMenuItem(fmt.Sprintf("About (%s)", CurrentVersion), "")
 	mQuit := systray.AddMenuItem("Exit", "")
 
-	if app.IsEnabled() {
+	if autostartApp.IsEnabled() {
 		mSetStartup.Check()
 	} else {
 		mSetStartup.Uncheck()
@@ -79,18 +117,24 @@ func onReady() {
 
 	go func() {
 		for range mSetStartup.ClickedCh {
-			if app.IsEnabled() {
+			if autostartApp.IsEnabled() {
 				mSetStartup.Uncheck()
 
-				if err := app.Disable(); err != nil {
+				if err := autostartApp.Disable(); err != nil {
 					fmt.Println(err)
 				}
 			} else {
 				mSetStartup.Check()
-				if err := app.Enable(); err != nil {
+				if err := autostartApp.Enable(); err != nil {
 					fmt.Println(err)
 				}
 			}
+		}
+	}()
+
+	go func() {
+		for range mReplayListView.ClickedCh {
+
 		}
 	}()
 
@@ -134,7 +178,7 @@ func parseUrlInput(input string) {
 				fmt.Println(err)
 			}
 
-			return
+			// return
 		}
 
 		// If the action is "play", play the replay

@@ -15,7 +15,7 @@ tasks:
     deps:
       - assets
     cmds:
-      - air -c .air.toml
+      - wails dev
     silent: false
     env:
       DEV_MODE: true
@@ -35,7 +35,6 @@ tasks:
     dotenv: [".env"]
   assets:
     cmds:
-      - rsrc -ico assets/icons/icon.ico -o icon.syso
       - go-bindata assets/...
       - echo "//lint:file-ignore SA1019 Ignore it's generated" > tempfile
       - echo "//lint:file-ignore ST1005 Ignore it's generated" >> tempfile

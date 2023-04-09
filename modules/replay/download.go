@@ -66,7 +66,7 @@ func Download(id string) string {
 
 	originalFileName := params["filename"]
 
-	// Create a simple ley/value database to store the original file names against the replay IDs within replay directory
+	// Create a simple key/value database to store the original file names against the replay IDs within replay directory
 	db, err := bbolt.Open(filepath.Join(replayDir, "coh3rm.db"), 0600, nil)
 	if err != nil {
 		fmt.Println(err)
@@ -81,7 +81,8 @@ func Download(id string) string {
 			return err
 		}
 
-		err = bucket.Put([]byte(id), []byte(originalFileName))
+		// Store the original file name and replay game version against the replay ID
+		err = bucket.Put([]byte(id), []byte(fmt.Sprintf("%s|%s", originalFileName, replayGameVersion)))
 		if err != nil {
 			fmt.Println(err)
 			return err

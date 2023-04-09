@@ -84,6 +84,8 @@ func InitialiseFolderWatcher() {
 					if err != nil {
 						fmt.Println("Error renaming file:", err)
 					}
+
+					// EventsEmit(ctx, "newReplay", nil)
 				}
 			}
 		case err, ok := <-watcher.Errors:
