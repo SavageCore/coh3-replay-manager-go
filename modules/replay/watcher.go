@@ -48,8 +48,8 @@ func InitialiseFolderWatcher() {
 			if !ok {
 				return
 			}
-			// Check if the event is a file creation or modification
-			if event.Op&fsnotify.Create == fsnotify.Create || event.Op&fsnotify.Write == fsnotify.Write {
+			// Check if the event is a file modification
+			if event.Op&fsnotify.Write == fsnotify.Write {
 				// Check if the file is the one you're interested in (temp.rec or temp_campaign.rec)
 				if filepath.Base(event.Name) == "temp.rec" || filepath.Base(event.Name) == "temp_campaign.rec" {
 					// Get the file modification time
