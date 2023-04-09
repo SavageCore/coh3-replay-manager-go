@@ -55,7 +55,7 @@ func InitialiseFolderWatcher() {
 					// Get the file modification time
 					fi, err := os.Stat(event.Name)
 					if err != nil {
-						panic(err)
+						fmt.Println("Error stating file:", err)
 					}
 					modTime := fi.ModTime()
 
@@ -69,7 +69,7 @@ func InitialiseFolderWatcher() {
 					// Rename the file with a unique name
 					err = renameFile(event.Name)
 					if err != nil {
-						panic(err)
+						fmt.Println("Error renaming file:", err)
 					}
 				}
 			}
