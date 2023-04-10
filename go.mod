@@ -7,6 +7,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gen2brain/beeep v0.0.0-20230307103607-6e717729cb4f
 	github.com/getlantern/systray v1.2.1
+	github.com/mitchellh/go-ps v1.0.0
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	go.etcd.io/bbolt v1.3.7
 	golang.org/x/sys v0.6.0

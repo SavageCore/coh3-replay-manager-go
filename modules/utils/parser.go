@@ -20,7 +20,7 @@ func ParseReplay(filename string) {
 	fmt.Println("Parsing replay: " + filename)
 
 	user := GetUsername()
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
+	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
 	replayFilePath := filepath.Join(replayDir, filename)
 
 	fi, err := os.Stat(replayFilePath)
