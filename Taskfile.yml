@@ -35,7 +35,8 @@ tasks:
     cmds:
       - rsrc -ico assets/icons/icon.ico -o icon.syso
       - go-bindata assets/...
-      - echo "//lint:file-ignore SA1019,ST1005 Ignore it's generated" > tempfile
+      - echo "//lint:file-ignore SA1019 Ignore it's generated" > tempfile
+      - echo "//lint:file-ignore ST1005 Ignore it's generated" >> tempfile
       - cat $PWD\\bindata.go | tee -a tempfile >/dev/null 2>&1
       - mv tempfile $PWD\\bindata.go
   lint:
