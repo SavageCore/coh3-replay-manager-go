@@ -14,6 +14,8 @@ import (
 	"github.com/getlantern/systray"
 )
 
+const CurrentVersion = "v0.1.3"
+
 func main() {
 	// Check if the app was opened with a command line argument
 	if len(os.Args) > 1 && strings.HasPrefix(os.Args[1], "coh3-replay-manager-go://") {
