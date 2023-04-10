@@ -58,6 +58,13 @@ func InitialiseFolderWatcher() {
 						fmt.Println("Error stating file:", err)
 					}
 					modTime := fi.ModTime()
+					fileSize := fi.Size()
+
+					// Check if the file is empty
+					if fileSize == 0 {
+						fmt.Println("File is empty, skipping...")
+						continue
+					}
 
 					// Check if the file has been modified since last time
 					lastModTime, ok := modTimes[event.Name]
