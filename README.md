@@ -1,6 +1,7 @@
 # Company of Heroes 3 Replay Manager
 
-[![Build Status](https://img.shields.io/github/actions/workflow/status/SavageCore/coh3-replay-manager-go/ci?label=CI&style=for-the-badge)](https://github.com/SavageCore/coh3-replay-manager-go/actions/workflows/ci.yml)
+[![Build Status](https://github.com/SavageCore/coh3-replay-manager-go/actions/workflows/ci.yml/badge.svg?style=for-the-badge)](https://github.com/SavageCore/coh3-replay-manager-go/actions/workflows/ci.yml)
+[![GitHub all releases](https://img.shields.io/github/downloads/SavageCore/coh3-replay-manager-go/total?style=flat)](https://github.com/SavageCore/coh3-replay-manager-go/releases/latest)
 
 > Tray app that automatically saves your replays and allows direct download and
 > play from [cohdb.com](https://cohdb.com/)
