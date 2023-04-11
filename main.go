@@ -115,13 +115,14 @@ func onExit() {
 }
 
 func parseUrlInput(input string) {
-	re := regexp.MustCompile(`^play/(\d+)/v/(\d+)$`)
+	re := regexp.MustCompile(`^([A-Za-z]+)/(\d+)/v/(\d+)$`)
 
 	if re.MatchString(input) {
+		action := re.FindStringSubmatch(input)[1]
 		// Get the ID from the URL
-		id := re.FindStringSubmatch(input)[1]
+		id := re.FindStringSubmatch(input)[2]
 		// Get the game version from the URL
-		replayGameVersion := re.FindStringSubmatch(input)[2]
+		replayGameVersion := re.FindStringSubmatch(input)[3]
 		gameVersion := game.GetGameVersion()
 
 		// Check if the game versions match
@@ -136,8 +137,16 @@ func parseUrlInput(input string) {
 			return
 		}
 
-		// Download the replay
-		replay.Download(id)
+		// If the action is "play", play the replay
+		if action == "play" {
+			filename := replay.Download(id)
+			replay.Play(filename)
+		}
+
+		if action == "download" {
+			replay.Download(id)
+		}
+
 	} else {
 		// Invalid URL
 		fmt.Println("Invalid URL")

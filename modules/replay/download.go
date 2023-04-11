@@ -12,7 +12,7 @@ import (
 	"go.etcd.io/bbolt"
 )
 
-func Download(id string) {
+func Download(id string) string {
 	user := utils.GetUsername()
 	fileName := fmt.Sprintf("downloaded-replay-%s.rec", id)
 	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
@@ -28,8 +28,7 @@ func Download(id string) {
 	for _, file := range files {
 		if re.MatchString(file.Name()) {
 			fmt.Printf("Found replay file with ID %s: %s\n", id, file.Name())
-			Play(file.Name())
-			return
+			return file.Name()
 		}
 	}
 
@@ -96,6 +95,5 @@ func Download(id string) {
 		panic(err)
 	}
 
-	// Play the replay
-	Play(fileName)
+	return fileName
 }

@@ -48,7 +48,6 @@ func Play(fileName string) {
 		return
 	}
 
-	fmt.Println("Steam process completed successfully!")
 	title := "Replay launched 🚀"
 	message := "⚠️ Look out for a confirmation window from Steam, allowing you to launch the game. ⚠️"
 	err := beeep.Notify(title, message, "")

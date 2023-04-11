@@ -45,6 +45,7 @@ const addPlayButtons = () => {
 
         const playButton = button.cloneNode(true);
 
+        button.href = `coh3-replay-manager-go://download/${replayId}/v/${gameVersion}`;
         playButton.href = `coh3-replay-manager-go://play/${replayId}/v/${gameVersion}`;
         playButton.querySelector('i').classList.remove('fa-download');
         playButton.querySelector('i').classList.add('fa-play');
