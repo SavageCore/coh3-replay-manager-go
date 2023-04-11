@@ -7,7 +7,7 @@ tasks:
       - lint
       - assets
     cmds:
-      - go build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -buildmode=exe -o bin/coh3-replay-manager.exe
+      - go build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -buildmode=exe -o bin/coh3-replay-manager-go.exe
     env:
       CGO_ENABLED: 1
       CC: C:\msys64\mingw64\bin\gcc.exe
@@ -17,6 +17,8 @@ tasks:
     cmds:
       - air -c .air.toml
     silent: false
+    env:
+      DEV_MODE: true
   release:
     deps:
       - lint
