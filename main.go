@@ -19,7 +19,7 @@ import (
 	"github.com/getlantern/systray"
 )
 
-const CurrentVersion = "v0.1.2"
+const CurrentVersion = "v0.1.4"
 
 func main() {
 	if os.Getenv("DEV_MODE") != "true" {
