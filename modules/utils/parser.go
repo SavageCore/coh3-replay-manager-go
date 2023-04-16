@@ -37,7 +37,7 @@ type ReplayObject struct {
 	Length int `json:"length"`
 }
 
-func ParseReplay(filename string) {
+func ParseReplay(filename string) (ReplayObject, error) {
 	user := GetUsername()
 	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
 	replayFilePath := filepath.Join(replayDir, filename)
@@ -45,7 +45,7 @@ func ParseReplay(filename string) {
 	_, err := os.Stat(replayFilePath)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
+		return ReplayObject{}, err
 	}
 
 	fmt.Println("Checking for flank binary...")
@@ -55,7 +55,7 @@ func ParseReplay(filename string) {
 		fmt.Println("flank binary not found, downloading...")
 		fp := <-downloadFlank()
 		if fp == "error" {
-			return
+			return ReplayObject{}, err
 		}
 
 		fmt.Println("Extracting flank binary...")
@@ -116,18 +116,15 @@ func ParseReplay(filename string) {
 		fmt.Println("Error:", err)
 	}
 
-	var obj ReplayObject
+	var replay ReplayObject
 
-	err = json.Unmarshal(out, &obj)
+	err = json.Unmarshal(out, &replay)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
+		return ReplayObject{}, err
 	}
 
-	// For each player in the replay, print their name and steam ID
-	for _, player := range obj.Players {
-		fmt.Println(player.Name, player.Team, player.SteamID)
-	}
+	return replay, nil
 }
 
 func downloadFlank() <-chan string {
