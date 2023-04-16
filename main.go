@@ -183,12 +183,12 @@ func parseUrlInput(input string) {
 
 		// If the action is "play", play the replay
 		if action == "play" {
-			filename := replay.Download(id)
+			filename := replay.Download(id, replayGameVersion)
 			replay.Play(filename)
 		}
 
 		if action == "download" {
-			replay.Download(id)
+			replay.Download(id, replayGameVersion)
 		}
 
 	} else {
