@@ -8,3 +8,4 @@ bindata.go
 
 .env
 *.reg
+flank.exe

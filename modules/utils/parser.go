@@ -1,132 +1,182 @@
 package utils
 
 import (
-	"encoding/hex"
+	"encoding/json"
 	"fmt"
-	"log"
+	"io"
+	"io/fs"
+	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
-	"strings"
+	"runtime"
+
+	"github.com/mholt/archiver/v4"
 )
 
-type Player struct {
-	Name    string
-	Faction string
+type ReplayObject struct {
+	Version        int    `json:"version"`
+	Timestamp      string `json:"timestamp"`
+	MatchhistoryID int    `json:"matchhistory_id"`
+	Map            struct {
+		Filename               string `json:"filename"`
+		LocalizedNameID        string `json:"localized_name_id"`
+		LocalizedDescriptionID string `json:"localized_description_id"`
+	} `json:"map"`
+	Players []struct {
+		Name      string        `json:"name"`
+		Faction   string        `json:"faction"`
+		Team      string        `json:"team"`
+		SteamID   int64         `json:"steam_id"`
+		ProfileID int           `json:"profile_id"`
+		Messages  []interface{} `json:"messages"` // Change the type to the actual type if known
+	} `json:"players"`
+	Length int `json:"length"`
 }
 
 func ParseReplay(filename string) {
-	fmt.Println("")
-	fmt.Println("")
-	fmt.Println("Parsing replay: " + filename)
-
 	user := GetUsername()
 	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
 	replayFilePath := filepath.Join(replayDir, filename)
 
-	fi, err := os.Stat(replayFilePath)
+	_, err := os.Stat(replayFilePath)
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	file, err := os.Open(replayFilePath)
-	if err != nil {
-		fmt.Println("Error opening file:", err)
-	}
-	defer file.Close()
-
-	data := make([]byte, fi.Size())
-	_, err = file.Read(data)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	dataHex := hex.EncodeToString(data)
-
-	// Get Players
-	playerSearch := hex.EncodeToString([]byte("default_ai_personality"))
-
-	var players []Player
-	pos := strings.Index(dataHex, playerSearch)
-
-	// If pos == -1, there are no players in the replay, so we can stop here
-	if pos == -1 {
-		fmt.Println("No players in replay - likely a campaign replay")
+		fmt.Println("Error:", err)
 		return
 	}
 
-	for pos != -1 {
-		// Get the player's team
-
-		// Get the player's faction
-		curPos := pos - 2
-
-		for dataHex[curPos:curPos+2] != "22" {
-			curPos = curPos - 2
+	fmt.Println("Checking for flank binary...")
+	// Download the latest version of flank if it doesn't exist
+	_, err = os.Stat("flank.exe")
+	if err != nil {
+		fmt.Println("flank binary not found, downloading...")
+		fp := <-downloadFlank()
+		if fp == "error" {
+			return
 		}
 
-		var faction string
+		fmt.Println("Extracting flank binary...")
 
-		curPos -= 4
-		for !strings.HasPrefix(faction, "0000") {
-			curPos -= 2
-			faction = dataHex[curPos:curPos+2] + faction
+		fsys, err := archiver.FileSystem(fp)
+		if err != nil {
+			fmt.Println("Error:", err)
 		}
 
-		faction = strings.ReplaceAll(faction, "00", "")
-		faction = string(FromHex(faction))
+		fs.WalkDir(fsys, ".", func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				fmt.Println("Error:", err)
+			}
+			if !d.IsDir() {
+				if filepath.Base(path) == "flank.exe" {
+					src, err := fsys.Open(path)
+					if err != nil {
+						fmt.Println("Error:", err)
+					}
+					defer src.Close()
 
-		// Get the player's name
-		var playerName string
-		curPos -= 24
-		for !strings.HasPrefix(playerName, "0000") {
-			curPos -= 2
-			playerName = dataHex[curPos:curPos+2] + playerName
-		}
+					dst, err := os.Create(filepath.Base(path))
+					if err != nil {
+						fmt.Println("Error:", err)
+					}
+					defer dst.Close()
 
-		playerName = strings.ReplaceAll(playerName, "00", "")
-		playerName = string(FromHex(playerName))
+					_, err = io.Copy(dst, src)
+					if err != nil {
+						fmt.Println("Error:", err)
+					}
+				}
+			}
 
-		players = append(players, Player{
-			Name:    playerName,
-			Faction: faction,
+			return nil
 		})
 
-		// Get the next player
-		dataHex = dataHex[pos+len(playerSearch):]
-		pos = strings.Index(dataHex, playerSearch)
-	}
-
-	// For each players, print their name and faction
-	for _, player := range players {
-		fmt.Println("Player: " + player.Name)
-		fmt.Println("Faction: " + player.Faction)
-	}
-
-	// Get Map
-	mapSearch := hex.EncodeToString([]byte("data:"))
-	pos = strings.Index(dataHex, mapSearch)
-
-	var mapName string
-
-	if pos != -1 {
-		pos += 10
-		var mapStr []byte
-
-		for dataHex[pos:pos+2] != "09" {
-			mapStr = append(mapStr, dataHex[pos:pos+2]...)
-			pos += 2
+		// Delete the downloaded file
+		err = os.Remove(filepath.Join(os.TempDir(), "flank.tar.gz"))
+		if err != nil {
+			fmt.Println("Failed to delete file:", err)
 		}
 
-		mapName = string(FromHex(string(mapStr)))
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
 	}
 
-	fmt.Println("Map: " + mapName)
+	fmt.Println("Parsing replay file:", replayFilePath)
+
+	// Parse the replay file with flank and return a Replay object
+	// flank returns a JSON object, so you can use the json package to parse it
+	// Example: flank.exe /path/to/replay.rec
+
+	cmd := exec.Command("./flank.exe", replayFilePath)
+	out, err := cmd.Output()
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	var obj ReplayObject
+
+	err = json.Unmarshal(out, &obj)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	// For each player in the replay, print their name and steam ID
+	for _, player := range obj.Players {
+		fmt.Println(player.Name, player.Team, player.SteamID)
+	}
 }
 
-func FromHex(s string) []byte {
-	b, err := hex.DecodeString(s)
-	if err != nil {
-		panic(err)
-	}
-	return b
+func downloadFlank() <-chan string {
+	c := make(chan string)
+	go func() {
+		fmt.Println("Downloading flank binary...")
+		// Download the latest version of flank from https://github.com/ryantaylor/flank/releases
+		// And extract it to the current directory
+		// Windows: x86_64-pc-windows-gnu.tar.gz
+		// Linux: x86_64-unknown-linux-gnu.tar.gz
+
+		// Filename
+		var filename string
+		switch runtime.GOOS {
+		case "windows":
+			filename = "x86_64-pc-windows-gnu.tar.gz"
+		case "linux":
+			filename = "x86_64-unknown-linux-gnu.tar.gz"
+		default:
+			fmt.Println("Unsupported OS:", runtime.GOOS)
+			c <- "error"
+		}
+
+		// Download the latest version of flank from GitHub releases
+		url := fmt.Sprintf("https://github.com/ryantaylor/flank/releases/latest/download/%s", filename)
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Println("Failed to download flank:", err)
+			c <- "error"
+		}
+		defer resp.Body.Close()
+
+		fmt.Println(os.TempDir())
+
+		// Create a new file to save the downloaded flank archive in tmp folder
+		filepath := filepath.Join(os.TempDir(), "flank.tar.gz")
+		file, err := os.Create(filepath)
+		if err != nil {
+			fmt.Println("Failed to create file:", err)
+			c <- "error"
+		}
+		defer file.Close()
+
+		// Copy the downloaded flank binary to the newly created file
+		_, err = io.Copy(file, resp.Body)
+		if err != nil {
+			fmt.Println("Failed to copy file:", err)
+			c <- "error"
+		}
+
+		fmt.Println("flank binary downloaded")
+		c <- filepath
+	}()
+	return c
 }
