@@ -24,12 +24,15 @@ type ReplayObject struct {
 		LocalizedDescriptionID string `json:"localized_description_id"`
 	} `json:"map"`
 	Players []struct {
-		Name      string        `json:"name"`
-		Faction   string        `json:"faction"`
-		Team      string        `json:"team"`
-		SteamID   int64         `json:"steam_id"`
-		ProfileID int           `json:"profile_id"`
-		Messages  []interface{} `json:"messages"` // Change the type to the actual type if known
+		Name      string `json:"name"`
+		Faction   string `json:"faction"`
+		Team      string `json:"team"`
+		SteamID   int64  `json:"steam_id"`
+		ProfileID int    `json:"profile_id"`
+		Messages  []struct {
+			Message string `json:"message"`
+			Tick    int    `json:"tick"`
+		} `json:"messages"` // Change the type to the actual type if known
 	} `json:"players"`
 	Length int `json:"length"`
 }
