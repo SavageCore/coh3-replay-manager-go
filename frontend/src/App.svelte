@@ -128,7 +128,7 @@
   //   return mapName;
   // }
 
-  function formatMap(filename: string) {
+  function formatMap(filename: string, players) {
     if (!filename.includes("\\")) {
       return filename;
     }
@@ -140,8 +140,10 @@
 
     if (mapDetailsMap[mapName]) {
       return `
-        <img src="${mapDetailsMap[mapName].url}" alt="${mapDetailsMap[mapName].name}" title="${mapDetailsMap[mapName].name}" style="width: 50px; height: auto;"/>
+        <img src="${mapDetailsMap[mapName].url}" alt="${mapDetailsMap[mapName].name}" title="(${players.length}) ${mapDetailsMap[mapName].name}" style="width: 50px; height: auto;"/>
       `;
+    } else {
+      return mapName;
     }
   }
 
@@ -187,11 +189,11 @@
       url: winterLineIcon,
     },
     mountain_ruins_8p_mkii: {
-      name: "Mignano Gap (8)",
+      name: "Mignano Gap",
       url: mignanoGap8pIcon,
     },
     mountain_ruins_6p: {
-      name: "Mignano Gap (6)",
+      name: "Mignano Gap",
       url: mignanoGap6pIcon,
     },
     gardens_2p_mm: {
@@ -291,7 +293,7 @@
         {#each replays as replay}
           <tr>
             <!-- <td>{replay.Filename}</td> -->
-            <td>{@html formatMap(replay.Map.Filename)}</td>
+            <td>{@html formatMap(replay.Map.Filename, replay.Players)}</td>
             <td>{@html formatPlayers(replay.Players)}</td>
             <td>{replay.Version}</td>
             <td>{formatLength(replay.Length)}</td>
