@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/mholt/archiver/v4"
@@ -203,6 +204,13 @@ func ParseReplay(filename string) (ReplayObject, error) {
 
 	formattedTimestamp := formatTime(replay.Timestamp)
 	replay.Timestamp = formattedTimestamp
+
+	// Example filename: "data:scenarios\multiplayer\twin_beach_2p_mkii\twin_beach_2p_mkii"
+    // Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
+    // We want to return the last part of the path
+	mapFilename := strings.Split(replay.Map.Filename, "\\")
+
+	replay.Map.Filename = mapFilename[len(mapFilename)-1]
 
 	return replay, nil
 }
