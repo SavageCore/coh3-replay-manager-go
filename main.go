@@ -3,6 +3,7 @@ package main
 import (
 	"coh3-replay-manager-go/modules/game"
 	"coh3-replay-manager-go/modules/replay"
+	"coh3-replay-manager-go/modules/shared"
 	"coh3-replay-manager-go/modules/utils"
 	"embed"
 	"fmt"
@@ -22,6 +23,7 @@ import (
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/options/assetserver"
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 const CurrentVersion = "v0.1.4"
@@ -29,21 +31,13 @@ const CurrentVersion = "v0.1.4"
 //go:embed all:frontend/dist
 var assets embed.FS
 
+// Create an instance of the app structure
+var app = NewApp()
+var replayWindowOpen = false
+
 // var wv webview.WebView
 
 func main() {
-	if os.Getenv("DEV_MODE") != "true" {
-		autoUpdate()
-
-		// Run auto update every 24 hours
-		go func() {
-			for {
-				time.Sleep(24 * time.Hour)
-				autoUpdate()
-			}
-		}()
-	}
-
 	// Check if the app was opened with a command line argument
 	if len(os.Args) > 1 && strings.HasPrefix(os.Args[1], "coh3-replay-manager-go://") {
 		// Print
@@ -57,10 +51,21 @@ func main() {
 		return
 	}
 
-	systray.Register(onReady, onExit)
+	if os.Getenv("DEV_MODE") != "true" {
+		autoUpdate()
 
-	// Create an instance of the app structure
-	app := NewApp()
+		// Run auto update every 24 hours
+		go func() {
+			for {
+				time.Sleep(24 * time.Hour)
+				autoUpdate()
+			}
+		}()
+	}
+
+	shared.AppContext = app.ctx
+
+	systray.Register(onReady, onExit)
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -76,7 +81,7 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
-		StartHidden:       false,
+		StartHidden:       true,
 		HideWindowOnClose: true,
 	})
 
@@ -134,6 +139,16 @@ func onReady() {
 
 	go func() {
 		for range mReplayListView.ClickedCh {
+
+			if replayWindowOpen {
+				runtime.Hide(app.ctx)
+				replayWindowOpen = false
+				mReplayListView.SetTitle("View replays")
+			} else {
+				runtime.Show(app.ctx)
+				replayWindowOpen = true
+				mReplayListView.SetTitle("Hide replays")
+			}
 
 		}
 	}()
