@@ -96,11 +96,82 @@
   }
 
   function formatTime(timeString) {
-    // Convert . to /
-    timeString = timeString.replace(/\./g, "/");
-    // Swap day and month
-    timeString = timeString.replace(/(\d+)\/(\d+)\/(\d+)/, "$2/$1/$3");
+    // Best guest regexes to convert the time string to a format that can be parsed by Date
+    // Examples:
+    // 13.04.2023 20:08 DD.MM.YYYY HH:MM
+    // 2023/4/9上午 12:45 YYYY/MM/DDAM HH:MM
+    // 08/04/2023 19:28 DD/MM/YYYY HH:MM
+    // 4/12/2023 6:47 PM MM/DD/YYYY HH:MM AM/PM
+    // 2023-03-13 오후 8:52 YYYY-MM-DD PM HH:MM
+
+    const regex = /(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})/;
+    const regex2 = /(\d{4})\/(\d{1,2})\/(\d{1,2})/;
+    const regex3 = /(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{2}):(\d{2})/;
+    const regex4 = /(\d{1,2})\/(\d{1,2})\/(\d{4}) (\d{1,2}):(\d{2}) (AM|PM)/;
+    const regex5 = /(\d{4})-(\d{1,2})-(\d{1,2})/;
+
+    const guess1 = regex.exec(timeString);
+    const guess2 = regex2.exec(timeString);
+    const guess3 = regex3.exec(timeString);
+    const guess4 = regex4.exec(timeString);
+    const guess5 = regex5.exec(timeString);
+
+    const originaltimeString = timeString;
+
+    if (guess1) {
+      timeString = `${pad(guess1[3])}-${pad(guess1[2])}-${pad(guess1[1])}T${pad(
+        guess1[4]
+      )}:${pad(guess1[5])}:00Z`;
+    } else if (guess2) {
+      timeString = `${pad(guess2[1])}-${pad(guess2[2])}-${pad(
+        guess2[3]
+      )}T00:00:00Z`;
+    } else if (guess3) {
+      if (Number(guess3[1]) > 12) {
+        timeString = `${pad(guess3[3])}-${pad(guess3[2])}-${pad(
+          guess3[1]
+        )}T${pad(guess3[4])}:${pad(guess3[5])}:00Z`;
+      } else {
+        timeString = `${pad(guess3[3])}-${pad(guess3[1])}-${pad(
+          guess3[2]
+        )}T${pad(guess3[4])}:${pad(guess3[5])}:00Z`;
+      }
+    } else if (guess4) {
+      if (Number(guess4[1]) > 12) {
+        timeString = `${pad(guess4[3])}-${pad(guess4[2])}-${pad(
+          guess4[1]
+        )}T${pad(guess4[4])}:${pad(guess4[5])}:00Z`;
+      } else {
+        timeString = `${pad(guess4[3])}-${pad(guess4[1])}-${pad(
+          guess4[2]
+        )}T${pad(guess4[4])}:${pad(guess4[5])}:00Z`;
+      }
+    } else if (guess5) {
+      timeString = `${pad(guess5[1])}-${pad(guess5[2])}-${pad(
+        guess5[3]
+      )}T00:00:00Z`;
+    }
+
     const date = new Date(timeString);
+
+    // Print the regexes that failed to help debug new formats
+    if (isNaN(date.getTime())) {
+      console.log("Invalid date: " + timeString);
+      console.log("Original string: " + originaltimeString);
+
+      if (!guess1) {
+        console.log("Regex 1 failed");
+      }
+      if (!guess2) {
+        console.log("Regex 2 failed");
+      }
+      if (!guess3) {
+        console.log("Regex 3 failed");
+      }
+      if (!guess4) {
+        console.log("Regex 4 failed");
+      }
+    }
 
     // Return in format: Apr 17, 2023
     const dateString = date.toLocaleDateString("en-GB", {
@@ -111,22 +182,11 @@
     return dateString;
   }
 
-  // function filenameToMapName(filename: string): string {
-  //   if (!filename.includes("\\")) {
-  //     return filename;
-  //   }
-  //   // Example filename: "data:scenarios\multiplayer\twin_beach_2p_mkii\twin_beach_2p_mkii"
-  //   // Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
-  //   // We want to return the last part of the path
-  //   const parts = filename.split("\\");
-  //   const mapName = parts[parts.length - 1];
-
-  //   if (map[mapName]) {
-  //     return map[mapName].name;
-  //   }
-
-  //   return mapName;
-  // }
+  function pad(num, size = 2) {
+    let s = num + "";
+    while (s.length < size) s = "0" + s;
+    return s;
+  }
 
   function formatMap(filename: string, players) {
     if (!filename.includes("\\")) {
