@@ -11,11 +11,6 @@ type App struct {
 	ctx context.Context
 }
 
-type ListResult struct {
-	Replays      map[string]string // Replace 'Replay' with the actual type of 'replays'
-	LocalReplays map[string]string // Replace 'Replay' with the actual type of 'localReplays'
-}
-
 // NewApp creates a new App application struct
 func NewApp() *App {
 	return &App{}
@@ -30,27 +25,19 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) shutdown(ctx context.Context) {}
 
-func (a *App) List() ListResult {
-	replays := replay.ListDownloaded()
-	localReplays := replay.ListLocal()
-
-	return ListResult{
-		Replays:      replays,
-		LocalReplays: localReplays,
-	}
+func (a *App) List() []replay.Replay {
+	return replay.List()
 }
 
-func (a *App) Play(id string) {
-	fileName := fmt.Sprintf("downloaded-replay-%s.rec", id)
+func (a *App) Play(fileName string) {
 	replay.Play(fileName)
 }
 
-func (a *App) PlayLocal(filename string) {
-	replay.Play(filename)
+func (a *App) PlayLocal(fileName string) {
+	replay.Play(fileName)
 }
 
-func (a *App) Remove(id string) {
-	fileName := fmt.Sprintf("downloaded-replay-%s.rec", id)
+func (a *App) Remove(fileName string) {
 	replay.Remove(fileName)
 }
 

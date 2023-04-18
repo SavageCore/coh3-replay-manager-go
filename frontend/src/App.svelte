@@ -10,6 +10,29 @@
   import { Modal, Button, Row, Col, Icon, Card } from "svelte-chota";
   import { mdiDelete, mdiPlay } from "@mdi/js";
 
+  // Import map icons
+  import aerePerenniusIcon from "./assets/icons/maps/aere_perennius.webp";
+  import campbellsConvoyIcon from "./assets/icons/maps/campbells_convoy.webp";
+  import gardensIcon from "./assets/icons/maps/gardens.png";
+  import crossroadsIcon from "./assets/icons/maps/gardens.png";
+  import gazalaLandingGroundIcon from "./assets/icons/maps/gazala_landing_ground.webp";
+  import laquilaIcon from "./assets/icons/maps/laquila.webp";
+  import mignanoGap6pIcon from "./assets/icons/maps/mignano_gap_6p.png";
+  import mignanoGap8pIcon from "./assets/icons/maps/mignano_gap.webp";
+  import pachinoFarmlandsIcon from "./assets/icons/maps/pachino_farmlands.webp";
+  import pachinoFarmlandsMkiiIcon from "./assets/icons/maps/pachino_farmlands_mkii.png";
+  import roadToTunisIcon from "./assets/icons/maps/road_to_tunis.webp";
+  import tarantoCoastlineIcon from "./assets/icons/maps/taranto_coastline.webp";
+  import torrenteIcon from "./assets/icons/maps/torrente.webp";
+  import twinBeachesIcon from "./assets/icons/maps/twin_beaches.webp";
+  import winterLineIcon from "./assets/icons/maps/winter_line.webp";
+
+  // Import faction icons
+  import dakIcon from "./assets/icons/factions/dak.webp";
+  import britishIcon from "./assets/icons/factions/british.webp";
+  import wehrmachtIcon from "./assets/icons/factions/german.webp";
+  import americanIcon from "./assets/icons/factions/american.webp";
+
   let replays;
   let localReplays;
   let localRemoveTarget;
@@ -32,9 +55,7 @@
   }
 
   async function list(): Promise<void> {
-    const listResponse = await List();
-    replays = listResponse.Replays;
-    localReplays = listResponse.LocalReplays;
+    replays = await List();
   }
 
   async function main() {
@@ -46,23 +67,205 @@
     // });
   }
 
-  async function play(id: string): Promise<void> {
-    await Play(id);
+  async function play(fileName: string): Promise<void> {
+    await Play(fileName);
   }
 
-  async function playLocal(id: string): Promise<void> {
-    await PlayLocal(id);
+  async function playLocal(fileName: string): Promise<void> {
+    await PlayLocal(fileName);
   }
 
-  async function remove(id: string): Promise<void> {
-    console.log(id);
-    await Remove(id);
+  async function remove(fileName: string): Promise<void> {
+    await Remove(fileName);
     removeTarget = "";
   }
 
-  async function removeLocal(id: string): Promise<void> {
-    await RemoveLocal(id);
+  async function removeLocal(fileName: string): Promise<void> {
+    await RemoveLocal(fileName);
     localRemoveTarget = "";
+  }
+
+  function formatLength(ticks) {
+    const seconds = Math.floor(ticks / 8);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds =
+      remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
+    return `${formattedMinutes}:${formattedSeconds}`;
+  }
+
+  function formatTime(timeString) {
+    // Convert . to /
+    timeString = timeString.replace(/\./g, "/");
+    // Swap day and month
+    timeString = timeString.replace(/(\d+)\/(\d+)\/(\d+)/, "$2/$1/$3");
+    const date = new Date(timeString);
+
+    // Return in format: Apr 17, 2023
+    const dateString = date.toLocaleDateString("en-GB", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+    return dateString;
+  }
+
+  // function filenameToMapName(filename: string): string {
+  //   if (!filename.includes("\\")) {
+  //     return filename;
+  //   }
+  //   // Example filename: "data:scenarios\multiplayer\twin_beach_2p_mkii\twin_beach_2p_mkii"
+  //   // Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
+  //   // We want to return the last part of the path
+  //   const parts = filename.split("\\");
+  //   const mapName = parts[parts.length - 1];
+
+  //   if (map[mapName]) {
+  //     return map[mapName].name;
+  //   }
+
+  //   return mapName;
+  // }
+
+  function formatMap(filename: string) {
+    if (!filename.includes("\\")) {
+      return filename;
+    }
+    // Example filename: "data:scenarios\multiplayer\twin_beach_2p_mkii\twin_beach_2p_mkii"
+    // Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
+    // We want to return the last part of the path
+    const parts = filename.split("\\");
+    const mapName = parts[parts.length - 1];
+
+    if (mapDetailsMap[mapName]) {
+      return `
+        <img src="${mapDetailsMap[mapName].url}" alt="${mapDetailsMap[mapName].name}" title="${mapDetailsMap[mapName].name}" style="width: 50px; height: auto;"/>
+      `;
+    }
+  }
+
+  const mapDetailsMap = {
+    twin_beach_2p_mkii: {
+      name: "Twin Beaches",
+      url: twinBeachesIcon,
+    },
+    desert_village_2p_mkiii: {
+      name: "Road to Tunis",
+      url: roadToTunisIcon,
+    },
+    cliff_crossing_2p: {
+      name: "Taranto Coastline",
+      url: tarantoCoastlineIcon,
+    },
+    rails_and_sand_4p: {
+      name: "Campbell's Convoy",
+      url: campbellsConvoyIcon,
+    },
+    rural_town_4p: {
+      name: "Pachino Farmlands",
+      url: pachinoFarmlandsIcon,
+    },
+    torrente_4p_mkiii: {
+      name: "Torrente",
+      url: torrenteIcon,
+    },
+    rural_castle_4p: {
+      name: "Aere Perennius",
+      url: aerePerenniusIcon,
+    },
+    desert_airfield_6p_mkii: {
+      name: "Gazala Landing Ground",
+      url: gazalaLandingGroundIcon,
+    },
+    industrial_railyard_6p_mkii: {
+      name: "L'Aquila",
+      url: laquilaIcon,
+    },
+    winter_line_8p_mkii: {
+      name: "Winter Line",
+      url: winterLineIcon,
+    },
+    mountain_ruins_8p_mkii: {
+      name: "Mignano Gap (8)",
+      url: mignanoGap8pIcon,
+    },
+    mountain_ruins_6p: {
+      name: "Mignano Gap (6)",
+      url: mignanoGap6pIcon,
+    },
+    gardens_2p_mm: {
+      name: "Gardens",
+      url: gardensIcon,
+    },
+    "(2) crossroads": {
+      name: "Crossroads",
+      url: crossroadsIcon,
+    },
+    rural_town_2p_mkii: {
+      name: "Pachino Stalemate",
+      url: pachinoFarmlandsMkiiIcon,
+    },
+  };
+
+  const factionIconMap = {
+    AfrikaKorps: dakIcon,
+    British: britishIcon,
+    Wehrmacht: wehrmachtIcon,
+    Americans: americanIcon,
+  };
+
+  function formatPlayers(players) {
+    if (players.length === 0) {
+      return "";
+    }
+
+    // Group players by team
+    const teams = players.reduce((acc, player) => {
+      if (!acc[player.Team]) {
+        acc[player.Team] = [];
+      }
+      acc[player.Team].push(player);
+      return acc;
+    }, {});
+
+    // For each team, create a string of faction icons
+    let team1 = teams.First.map((player) => {
+      return `<a href="https://steamcommunity.com/profiles/${
+        player.SteamID
+      }" target="_blank"><img class="faction-icon" src="${
+        factionIconMap[player.Faction]
+      }" title="${player.Name}"/></a>`;
+    });
+
+    let team2 = teams.Second.map((player) => {
+      return `<a href="https://steamcommunity.com/profiles/${
+        player.SteamID
+      }" target="_blank"><img class="faction-icon" src="${
+        factionIconMap[player.Faction]
+      }" title="${player.Name}"/></a>`;
+    });
+
+    if (players.length === 2) {
+      team1 = teams.First.map((player) => {
+        return `<a href="https://steamcommunity.com/profiles/${
+          player.SteamID
+        }" target="_blank"><img class="faction-icon" src="${
+          factionIconMap[player.Faction]
+        }" title="${player.Name}"/></a> ${player.Name.trim()}`;
+      });
+
+      team2 = teams.Second.map((player) => {
+        return `<a href="https://steamcommunity.com/profiles/${
+          player.SteamID
+        }" target="_blank"><img class="faction-icon" src="${
+          factionIconMap[player.Faction]
+        }" title="${player.Name}"/></a> ${player.Name.trim()}`;
+      });
+      return `${team1.join(" ")} <br> ${team2.join(" ")}`;
+    }
+
+    return `${team1.join(" ")} vs. ${team2.join(" ")}`;
   }
 
   main();
@@ -70,26 +273,33 @@
 
 <main>
   <h1>Replay Manager</h1>
-  <!-- <p>openLocalRemove={openLocalRemove}</p> -->
   <!-- Display table of replays -->
-  {#if replays && Object.keys(replays).length > 0}
+  {#if replays && replays.length > 0}
     <table>
       <thead>
         <tr>
-          <th>Replay</th>
+          <!-- <th>Filename</th> -->
+          <th>Map</th>
+          <th>Players</th>
           <th>Game version</th>
+          <th>Length</th>
+          <th>Date</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        {#each Object.keys(replays) as key (key)}
+        {#each replays as replay}
           <tr>
-            <td>{replays[key].split("|")[0]}</td>
-            <td>{replays[key].split("|")[1]}</td>
+            <!-- <td>{replay.Filename}</td> -->
+            <td>{@html formatMap(replay.Map.Filename)}</td>
+            <td>{@html formatPlayers(replay.Players)}</td>
+            <td>{replay.Version}</td>
+            <td>{formatLength(replay.Length)}</td>
+            <td>{formatTime(replay.Timestamp)}</td>
             <td>
               <Row>
                 <Col
-                  ><Button on:click={() => play(key)}
+                  ><Button on:click={() => play(replay.Filename)}
                     ><Icon src={mdiPlay} /></Button
                   ></Col
                 >
@@ -97,7 +307,7 @@
                   ><Button
                     on:click={() => {
                       modal_show();
-                      removeTarget = key;
+                      removeTarget = replay.Filename;
                     }}
                     error><Icon src={mdiDelete} /></Button
                   ></Col
@@ -112,7 +322,7 @@
     <p>No replays found</p>
   {/if}
 
-  <!-- Display table of local replays -->
+  <!-- Display table of local replays
   {#if localReplays && Object.keys(localReplays).length > 0}
     <table>
       <thead>
@@ -172,7 +382,7 @@
     </table>
   {:else}
     <p>No local replays found</p>
-  {/if}
+  {/if} -->
 
   <Modal bind:open={openLocalRemove}>
     <Card>
