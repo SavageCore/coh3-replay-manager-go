@@ -1,5 +1,7 @@
 {
     "go.lintTool": "staticcheck",
-    "prettier.enable": false,
-    "standard.enable": true,
+    "prettier.enable": true,
+    "standard.enable": false,
+    "prettier.singleQuote": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
 }

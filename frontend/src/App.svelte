@@ -5,33 +5,33 @@
     PlayLocal,
     Remove,
     RemoveLocal,
-  } from "../wailsjs/go/main/App.js";
-  import "chota";
-  import { Modal, Button, Row, Col, Icon, Card } from "svelte-chota";
-  import { mdiDelete, mdiPlay } from "@mdi/js";
+  } from '../wailsjs/go/main/App.js';
+  import 'chota';
+  import { Modal, Button, Row, Col, Icon, Card } from 'svelte-chota';
+  import { mdiDelete, mdiPlay } from '@mdi/js';
 
   // Import map icons
-  import aerePerenniusIcon from "./assets/icons/maps/aere_perennius.webp";
-  import campbellsConvoyIcon from "./assets/icons/maps/campbells_convoy.webp";
-  import gardensIcon from "./assets/icons/maps/gardens.png";
-  import crossroadsIcon from "./assets/icons/maps/gardens.png";
-  import gazalaLandingGroundIcon from "./assets/icons/maps/gazala_landing_ground.webp";
-  import laquilaIcon from "./assets/icons/maps/laquila.webp";
-  import mignanoGap6pIcon from "./assets/icons/maps/mignano_gap_6p.png";
-  import mignanoGap8pIcon from "./assets/icons/maps/mignano_gap.webp";
-  import pachinoFarmlandsIcon from "./assets/icons/maps/pachino_farmlands.webp";
-  import pachinoFarmlandsMkiiIcon from "./assets/icons/maps/pachino_farmlands_mkii.png";
-  import roadToTunisIcon from "./assets/icons/maps/road_to_tunis.webp";
-  import tarantoCoastlineIcon from "./assets/icons/maps/taranto_coastline.webp";
-  import torrenteIcon from "./assets/icons/maps/torrente.webp";
-  import twinBeachesIcon from "./assets/icons/maps/twin_beaches.webp";
-  import winterLineIcon from "./assets/icons/maps/winter_line.webp";
+  import aerePerenniusIcon from './assets/icons/maps/aere_perennius.webp';
+  import campbellsConvoyIcon from './assets/icons/maps/campbells_convoy.webp';
+  import gardensIcon from './assets/icons/maps/gardens.png';
+  import crossroadsIcon from './assets/icons/maps/gardens.png';
+  import gazalaLandingGroundIcon from './assets/icons/maps/gazala_landing_ground.webp';
+  import laquilaIcon from './assets/icons/maps/laquila.webp';
+  import mignanoGap6pIcon from './assets/icons/maps/mignano_gap_6p.png';
+  import mignanoGap8pIcon from './assets/icons/maps/mignano_gap.webp';
+  import pachinoFarmlandsIcon from './assets/icons/maps/pachino_farmlands.webp';
+  import pachinoFarmlandsMkiiIcon from './assets/icons/maps/pachino_farmlands_mkii.png';
+  import roadToTunisIcon from './assets/icons/maps/road_to_tunis.webp';
+  import tarantoCoastlineIcon from './assets/icons/maps/taranto_coastline.webp';
+  import torrenteIcon from './assets/icons/maps/torrente.webp';
+  import twinBeachesIcon from './assets/icons/maps/twin_beaches.webp';
+  import winterLineIcon from './assets/icons/maps/winter_line.webp';
 
   // Import faction icons
-  import dakIcon from "./assets/icons/factions/dak.webp";
-  import britishIcon from "./assets/icons/factions/british.webp";
-  import wehrmachtIcon from "./assets/icons/factions/german.webp";
-  import americanIcon from "./assets/icons/factions/american.webp";
+  import dakIcon from './assets/icons/factions/dak.webp';
+  import britishIcon from './assets/icons/factions/british.webp';
+  import wehrmachtIcon from './assets/icons/factions/german.webp';
+  import americanIcon from './assets/icons/factions/american.webp';
 
   let replays;
   let localReplays;
@@ -49,9 +49,9 @@
 
   if (
     window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+    window.matchMedia('(prefers-color-scheme: dark)').matches
   ) {
-    document.body.classList.add("dark");
+    document.body.classList.add('dark');
   }
 
   async function list(): Promise<void> {
@@ -77,15 +77,15 @@
 
   async function remove(fileName: string): Promise<void> {
     await Remove(fileName);
-    removeTarget = "";
+    removeTarget = '';
   }
 
   async function removeLocal(fileName: string): Promise<void> {
     await RemoveLocal(fileName);
-    localRemoveTarget = "";
+    localRemoveTarget = '';
   }
 
-  function formatLength(ticks) {
+  const formatLength = (ticks) => {
     const seconds = Math.floor(ticks / 8);
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -93,9 +93,9 @@
     const formattedSeconds =
       remainingSeconds < 10 ? `0${remainingSeconds}` : remainingSeconds;
     return `${formattedMinutes}:${formattedSeconds}`;
-  }
+  };
 
-  function formatTime(timeString) {
+  const formatTime = (timeString) => {
     // Best guest regexes to convert the time string to a format that can be parsed by Date
     // Examples:
     // 13.04.2023 20:08 DD.MM.YYYY HH:MM
@@ -156,46 +156,46 @@
 
     // Print the regexes that failed to help debug new formats
     if (isNaN(date.getTime())) {
-      console.log("Invalid date: " + timeString);
-      console.log("Original string: " + originaltimeString);
+      console.log('Invalid date: ' + timeString);
+      console.log('Original string: ' + originaltimeString);
 
       if (!guess1) {
-        console.log("Regex 1 failed");
+        console.log('Regex 1 failed');
       }
       if (!guess2) {
-        console.log("Regex 2 failed");
+        console.log('Regex 2 failed');
       }
       if (!guess3) {
-        console.log("Regex 3 failed");
+        console.log('Regex 3 failed');
       }
       if (!guess4) {
-        console.log("Regex 4 failed");
+        console.log('Regex 4 failed');
       }
     }
 
     // Return in format: Apr 17, 2023
-    const dateString = date.toLocaleDateString("en-GB", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+    const dateString = date.toLocaleDateString('en-GB', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     });
     return dateString;
-  }
+  };
 
-  function pad(num, size = 2) {
-    let s = num + "";
-    while (s.length < size) s = "0" + s;
+  const pad = (num, size = 2) => {
+    let s = num + '';
+    while (s.length < size) s = '0' + s;
     return s;
-  }
+  };
 
-  function formatMap(filename: string, players) {
-    if (!filename.includes("\\")) {
+  const formatMap = (filename: string, players) => {
+    if (!filename.includes('\\')) {
       return filename;
     }
     // Example filename: "data:scenarios\multiplayer\twin_beach_2p_mkii\twin_beach_2p_mkii"
     // Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
     // We want to return the last part of the path
-    const parts = filename.split("\\");
+    const parts = filename.split('\\');
     const mapName = parts[parts.length - 1];
 
     if (mapDetailsMap[mapName]) {
@@ -205,81 +205,11 @@
     } else {
       return mapName;
     }
-  }
-
-  const mapDetailsMap = {
-    twin_beach_2p_mkii: {
-      name: "Twin Beaches",
-      url: twinBeachesIcon,
-    },
-    desert_village_2p_mkiii: {
-      name: "Road to Tunis",
-      url: roadToTunisIcon,
-    },
-    cliff_crossing_2p: {
-      name: "Taranto Coastline",
-      url: tarantoCoastlineIcon,
-    },
-    rails_and_sand_4p: {
-      name: "Campbell's Convoy",
-      url: campbellsConvoyIcon,
-    },
-    rural_town_4p: {
-      name: "Pachino Farmlands",
-      url: pachinoFarmlandsIcon,
-    },
-    torrente_4p_mkiii: {
-      name: "Torrente",
-      url: torrenteIcon,
-    },
-    rural_castle_4p: {
-      name: "Aere Perennius",
-      url: aerePerenniusIcon,
-    },
-    desert_airfield_6p_mkii: {
-      name: "Gazala Landing Ground",
-      url: gazalaLandingGroundIcon,
-    },
-    industrial_railyard_6p_mkii: {
-      name: "L'Aquila",
-      url: laquilaIcon,
-    },
-    winter_line_8p_mkii: {
-      name: "Winter Line",
-      url: winterLineIcon,
-    },
-    mountain_ruins_8p_mkii: {
-      name: "Mignano Gap",
-      url: mignanoGap8pIcon,
-    },
-    mountain_ruins_6p: {
-      name: "Mignano Gap",
-      url: mignanoGap6pIcon,
-    },
-    gardens_2p_mm: {
-      name: "Gardens",
-      url: gardensIcon,
-    },
-    "(2) crossroads": {
-      name: "Crossroads",
-      url: crossroadsIcon,
-    },
-    rural_town_2p_mkii: {
-      name: "Pachino Stalemate",
-      url: pachinoFarmlandsMkiiIcon,
-    },
   };
 
-  const factionIconMap = {
-    AfrikaKorps: dakIcon,
-    British: britishIcon,
-    Wehrmacht: wehrmachtIcon,
-    Americans: americanIcon,
-  };
-
-  function formatPlayers(players) {
+  const formatPlayers = (players) => {
     if (players.length === 0) {
-      return "";
+      return '';
     }
 
     // Group players by team
@@ -324,11 +254,81 @@
           factionIconMap[player.Faction]
         }" title="${player.Name}"/></a> ${player.Name.trim()}`;
       });
-      return `${team1.join(" ")} <br> ${team2.join(" ")}`;
+      return `${team1.join(' ')} <br> ${team2.join(' ')}`;
     }
 
-    return `${team1.join(" ")} vs. ${team2.join(" ")}`;
-  }
+    return `${team1.join(' ')} vs. ${team2.join(' ')}`;
+  };
+
+  const mapDetailsMap = {
+    twin_beach_2p_mkii: {
+      name: 'Twin Beaches',
+      url: twinBeachesIcon,
+    },
+    desert_village_2p_mkiii: {
+      name: 'Road to Tunis',
+      url: roadToTunisIcon,
+    },
+    cliff_crossing_2p: {
+      name: 'Taranto Coastline',
+      url: tarantoCoastlineIcon,
+    },
+    rails_and_sand_4p: {
+      name: "Campbell's Convoy",
+      url: campbellsConvoyIcon,
+    },
+    rural_town_4p: {
+      name: 'Pachino Farmlands',
+      url: pachinoFarmlandsIcon,
+    },
+    torrente_4p_mkiii: {
+      name: 'Torrente',
+      url: torrenteIcon,
+    },
+    rural_castle_4p: {
+      name: 'Aere Perennius',
+      url: aerePerenniusIcon,
+    },
+    desert_airfield_6p_mkii: {
+      name: 'Gazala Landing Ground',
+      url: gazalaLandingGroundIcon,
+    },
+    industrial_railyard_6p_mkii: {
+      name: "L'Aquila",
+      url: laquilaIcon,
+    },
+    winter_line_8p_mkii: {
+      name: 'Winter Line',
+      url: winterLineIcon,
+    },
+    mountain_ruins_8p_mkii: {
+      name: 'Mignano Gap',
+      url: mignanoGap8pIcon,
+    },
+    mountain_ruins_6p: {
+      name: 'Mignano Gap',
+      url: mignanoGap6pIcon,
+    },
+    gardens_2p_mm: {
+      name: 'Gardens',
+      url: gardensIcon,
+    },
+    '(2) crossroads': {
+      name: 'Crossroads',
+      url: crossroadsIcon,
+    },
+    rural_town_2p_mkii: {
+      name: 'Pachino Stalemate',
+      url: pachinoFarmlandsMkiiIcon,
+    },
+  };
+
+  const factionIconMap = {
+    AfrikaKorps: dakIcon,
+    British: britishIcon,
+    Wehrmacht: wehrmachtIcon,
+    Americans: americanIcon,
+  };
 
   main();
 </script>

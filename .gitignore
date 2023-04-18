@@ -9,3 +9,5 @@ bindata.go
 .env
 *.reg
 flank.exe
+
+frontend/package.json.md5
