@@ -9,7 +9,10 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
+	"strconv"
+	"time"
 
 	"github.com/mholt/archiver/v4"
 )
@@ -35,6 +38,80 @@ type ReplayObject struct {
 		} `json:"messages"` // Change the type to the actual type if known
 	} `json:"players"`
 	Length int `json:"length"`
+}
+
+func formatTime(timeString string) string {
+	// Best guess regexes to convert the time string to a format that can be parsed by Date
+	// Examples:
+	// 13.04.2023 20:08 DD.MM.YYYY HH:MM
+	// 2023/4/9上午 12:45 YYYY/MM/DDAM HH:MM
+	// 08/04/2023 19:28 DD/MM/YYYY HH:MM
+	// 4/12/2023 6:47 PM MM/DD/YYYY HH:MM AM/PM
+	// 10/3/2023 12:15 πμ
+	// 2023-03-13 오후 8:52 YYYY-MM-DD PM H:MM
+	// 2023-03-13 8:52 YYYY-MM-DD H:MM
+	// 3/03/2023 5:39 pm MM/DD/YYYY H:MM AM/PM
+
+	regex := regexp.MustCompile(`(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})`)
+	regex2 := regexp.MustCompile(`(\d{4})/(\d{1,2})/(\d{1,2})`)
+	regex3 := regexp.MustCompile(`(\d{1,2})/(\d{1,2})/(\d{4}) (\d{2}):(\d{2})`)
+	regex4 := regexp.MustCompile(`(\d{1,2})/(\d{1,2})/(\d{4}) (\d{1,2}):(\d{2}) (AM|PM|πμ)`)
+	regex5 := regexp.MustCompile(`(\d{4})-(\d{1,2})-(\d{1,2}) (?:오전|오후) (\d{1,2}):(\d{1,2})`)
+	regex6 := regexp.MustCompile(`(\d{4})-(\d{1,2})-(\d{1,2}) (\d{1,2}):(\d{1,2})`)
+	regex7 := regexp.MustCompile(`(\d{1,2})/(\d{1,2})/(\d{4}) (\d{1,2}):(\d{2}) (am|pm)`)
+
+	guess1 := regex.FindStringSubmatch(timeString)
+	guess2 := regex2.FindStringSubmatch(timeString)
+	guess3 := regex3.FindStringSubmatch(timeString)
+	guess4 := regex4.FindStringSubmatch(timeString)
+	guess5 := regex5.FindStringSubmatch(timeString)
+	guess6 := regex6.FindStringSubmatch(timeString)
+	guess7 := regex7.FindStringSubmatch(timeString)
+
+	originalTimeString := timeString
+
+	if len(guess1) > 0 {
+		timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess1[3]), pad(guess1[2]), pad(guess1[1]), pad(guess1[4]), pad(guess1[5]))
+	} else if len(guess2) > 0 {
+		timeString = fmt.Sprintf("%s-%s-%sT00:00:00Z", pad(guess2[1]), pad(guess2[2]), pad(guess2[3]))
+	} else if len(guess3) > 0 {
+		if num, err := strconv.Atoi(guess3[1]); err == nil && num > 12 {
+			timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess3[3]), pad(guess3[2]), pad(guess3[1]), pad(guess3[4]), pad(guess3[5]))
+		} else {
+			timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess3[3]), pad(guess3[1]), pad(guess3[2]), pad(guess3[4]), pad(guess3[5]))
+		}
+	} else if len(guess4) > 0 {
+		if num, err := strconv.Atoi(guess4[1]); err == nil && num > 12 {
+			timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess4[3]), pad(guess4[2]), pad(guess4[1]), pad(guess4[4]), pad(guess4[5]))
+		} else {
+			timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess4[3]), pad(guess4[1]), pad(guess4[2]), pad(guess4[4]), pad(guess4[5]))
+		}
+	} else if len(guess5) > 0 {
+		timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess5[1]), pad(guess5[2]), pad(guess5[3]), pad(guess5[4]), pad(guess5[5]))
+	} else if len(guess6) > 0 {
+		timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess6[1]), pad(guess6[2]), pad(guess6[3]), pad(guess6[4]), pad(guess6[5]))
+	} else if len(guess7) > 0 {
+		if num, err := strconv.Atoi(guess7[1]); err == nil && num > 12 {
+			timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess7[3]), pad(guess7[2]), pad(guess7[1]), pad(guess7[4]), pad(guess7[5]))
+		} else {
+			timeString = fmt.Sprintf("%s-%s-%sT%s:%s:00Z", pad(guess7[3]), pad(guess7[1]), pad(guess7[2]), pad(guess7[4]), pad(guess7[5]))
+		}
+	}
+
+	t, err := time.Parse(time.RFC3339, timeString)
+	if err != nil {
+		fmt.Println("Error parsing time string:", originalTimeString)
+		return originalTimeString
+	}
+
+	return t.Format("2006-01-02 15:04")
+}
+
+func pad(s string) string {
+	if len(s) == 1 {
+		return "0" + s
+	}
+	return s
 }
 
 func ParseReplay(filename string) (ReplayObject, error) {
@@ -123,6 +200,9 @@ func ParseReplay(filename string) (ReplayObject, error) {
 		fmt.Println("Error:", err)
 		return ReplayObject{}, err
 	}
+
+	formattedTimestamp := formatTime(replay.Timestamp)
+	replay.Timestamp = formattedTimestamp
 
 	return replay, nil
 }
