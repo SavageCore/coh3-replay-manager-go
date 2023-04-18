@@ -14,6 +14,9 @@ the replay of your last game played is stored as `temp.rec` and
 `temp_campaign.rec` it then automatically renames these files to saved-replay
 followed by Unix time.
 
+Playing a replay from [cohdb.com](https://cohdb.com/) is also supported. The app
+will download the replay and then launch the game with a single click!
+
 Needs a decent logo and a better name probably. I'm open to suggestions and PRs.
 
 # Running 🏃
