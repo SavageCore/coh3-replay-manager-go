@@ -58,7 +58,13 @@ func List() []Replay {
 
 			// Check if the replay is cached in the database
 			cachedReplay, err := GetCached(file.Name())
-			if err == nil {
+			if err != nil {
+				fmt.Println("Error getting cached replay:", err)
+			}
+
+			if cachedReplay.Players != nil {
+				fmt.Println("Using cached replay: " + file.Name())
+
 				players := []Player{}
 
 				for _, player := range cachedReplay.Players {
