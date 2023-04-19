@@ -1,7 +1,7 @@
 package replay
 
 import (
-	"coh3-replay-manager-go/modules/utils"
+	"coh3-replay-manager-go/modules/shared"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -41,8 +41,7 @@ type Message struct {
 // Function to list all replays by ".rec" files in the replay directory
 func List() []Replay {
 	var replays []Replay
-	user := utils.GetUsername()
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
+	replayDir := shared.GetReplayDir()
 
 	files, err := os.ReadDir(replayDir)
 	if err != nil {
@@ -57,7 +56,36 @@ func List() []Replay {
 				continue
 			}
 
-			replay, err := utils.ParseReplay(file.Name())
+			// Check if the replay is cached in the database
+			cachedReplay, err := GetCached(file.Name())
+			if err == nil {
+				players := []Player{}
+
+				for _, player := range cachedReplay.Players {
+					players = append(players, Player{
+						Name:      player.Name,
+						Faction:   player.Faction,
+						Team:      player.Team,
+						SteamID:   fmt.Sprintf("%d", player.SteamID),
+						ProfileID: player.ProfileID,
+					})
+				}
+
+				replays = append(replays, Replay{
+					Filename:  file.Name(),
+					Version:   cachedReplay.Version,
+					Timestamp: cachedReplay.Timestamp,
+					Length:    cachedReplay.Length,
+					Map: Map{Filename: cachedReplay.Map.Filename,
+						LocalizedNameID:        cachedReplay.Map.LocalizedNameID,
+						LocalizedDescriptionID: cachedReplay.Map.LocalizedDescriptionID,
+					},
+					Players: players})
+
+				continue
+			}
+
+			replay, err := Parse(file.Name())
 			if err != nil {
 				fmt.Println("Error parsing replay:", err)
 			}
@@ -84,6 +112,9 @@ func List() []Replay {
 					LocalizedDescriptionID: replay.Map.LocalizedDescriptionID,
 				},
 				Players: players})
+
+			// Cache the replay in the database so we can skip parsing it next time
+			Cache(file.Name(), replay)
 		}
 	}
 

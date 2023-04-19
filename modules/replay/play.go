@@ -1,6 +1,7 @@
 package replay
 
 import (
+	"coh3-replay-manager-go/modules/shared"
 	"coh3-replay-manager-go/modules/utils"
 	"fmt"
 	"os"
@@ -22,9 +23,8 @@ func Play(fileName string) {
 
 	args := strings.Split(launchOptions, " ")
 
-	user := utils.GetUsername()
-	playbackDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
-	replayDir := filepath.Join(playbackDir, "replays")
+	playbackDir := shared.GetPlaybackDir()
+	replayDir := shared.GetReplayDir()
 
 	srcFile := filepath.Join(replayDir, fileName)
 	destinationFile := filepath.Join(playbackDir, fileName)

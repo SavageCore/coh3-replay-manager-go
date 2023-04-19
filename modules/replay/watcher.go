@@ -1,7 +1,7 @@
 package replay
 
 import (
-	"coh3-replay-manager-go/modules/utils"
+	"coh3-replay-manager-go/modules/shared"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -17,7 +17,7 @@ func InitialiseFolderWatcher() {
 	}
 	defer watcher.Close()
 
-	user := utils.GetUsername()
+	user := shared.GetUsername()
 
 	dir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
 	err = watcher.Add(dir)

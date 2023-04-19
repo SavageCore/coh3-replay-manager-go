@@ -1,6 +1,7 @@
-package utils
+package replay
 
 import (
+	"coh3-replay-manager-go/modules/shared"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -115,9 +116,8 @@ func pad(s string) string {
 	return s
 }
 
-func ParseReplay(filename string) (ReplayObject, error) {
-	user := GetUsername()
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
+func Parse(filename string) (ReplayObject, error) {
+	replayDir := shared.GetReplayDir()
 	replayFilePath := filepath.Join(replayDir, filename)
 
 	_, err := os.Stat(replayFilePath)
@@ -206,8 +206,8 @@ func ParseReplay(filename string) (ReplayObject, error) {
 	replay.Timestamp = formattedTimestamp
 
 	// Example filename: "data:scenarios\multiplayer\twin_beach_2p_mkii\twin_beach_2p_mkii"
-    // Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
-    // We want to return the last part of the path
+	// Another: "data:scenarios\multiplayer\(2) crossroads\(2) crossroads"
+	// We want to return the last part of the path
 	mapFilename := strings.Split(replay.Map.Filename, "\\")
 
 	replay.Map.Filename = mapFilename[len(mapFilename)-1]

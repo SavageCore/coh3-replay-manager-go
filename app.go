@@ -3,7 +3,6 @@ package main
 import (
 	"coh3-replay-manager-go/modules/replay"
 	"context"
-	"fmt"
 )
 
 // App struct
@@ -20,7 +19,6 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	fmt.Println("App started")
 }
 
 func (a *App) shutdown(ctx context.Context) {}

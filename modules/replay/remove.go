@@ -1,7 +1,7 @@
 package replay
 
 import (
-	"coh3-replay-manager-go/modules/utils"
+	"coh3-replay-manager-go/modules/shared"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -10,8 +10,7 @@ import (
 )
 
 func Remove(fileName string) {
-	user := utils.GetUsername()
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
+	replayDir := shared.GetReplayDir()
 	filePath := filepath.Join(replayDir, fileName)
 
 	// If fileName includes downloaded-replay- prefix, remove it from the database
@@ -36,7 +35,16 @@ func Remove(fileName string) {
 
 		if err != nil {
 			fmt.Println(err)
-			panic(err)
+		}
+
+		err = db.Update(func(tx *bbolt.Tx) error {
+			b := tx.Bucket([]byte("replayObjects"))
+			err := b.Delete([]byte(fileName))
+			return err
+		})
+
+		if err != nil {
+			fmt.Println(err)
 		}
 	}
 

@@ -1,7 +1,7 @@
 package replay
 
 import (
-	"coh3-replay-manager-go/modules/utils"
+	"coh3-replay-manager-go/modules/shared"
 	"fmt"
 	"mime"
 	"net/http"
@@ -13,12 +13,10 @@ import (
 )
 
 func Download(id string, replayGameVersion string) string {
-	user := utils.GetUsername()
 	fileName := fmt.Sprintf("downloaded-replay-%s.rec", id)
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
 
 	// If another replay with the same id exists, play it instead of downloading it again
-	files, err := os.ReadDir(replayDir)
+	files, err := os.ReadDir(shared.GetReplayDir())
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +31,7 @@ func Download(id string, replayGameVersion string) string {
 	}
 
 	// Proceed with the download
-	filePath := filepath.Join(replayDir, fileName)
+	filePath := filepath.Join(shared.GetReplayDir(), fileName)
 	url := fmt.Sprintf("https://cohdb.com/replays/%s/download", id)
 
 	// Create the file
@@ -67,7 +65,7 @@ func Download(id string, replayGameVersion string) string {
 	originalFileName := params["filename"]
 
 	// Create a simple key/value database to store the original file names against the replay IDs within replay directory
-	db, err := bbolt.Open(filepath.Join(replayDir, "coh3rm.db"), 0600, nil)
+	db, err := bbolt.Open(filepath.Join(shared.GetReplayDir(), "coh3rm.db"), 0600, nil)
 	if err != nil {
 		fmt.Println(err)
 		panic(err)
