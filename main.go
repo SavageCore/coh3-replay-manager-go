@@ -3,7 +3,6 @@ package main
 import (
 	"coh3-replay-manager-go/modules/game"
 	"coh3-replay-manager-go/modules/replay"
-	"coh3-replay-manager-go/modules/shared"
 	"coh3-replay-manager-go/modules/utils"
 	"embed"
 	"fmt"
@@ -62,8 +61,6 @@ func main() {
 			}
 		}()
 	}
-
-	shared.AppContext = app.ctx
 
 	systray.Register(onReady, onExit)
 
@@ -139,7 +136,6 @@ func onReady() {
 
 	go func() {
 		for range mReplayListView.ClickedCh {
-
 			if replayWindowOpen {
 				runtime.Hide(app.ctx)
 				replayWindowOpen = false
@@ -148,6 +144,8 @@ func onReady() {
 				runtime.Show(app.ctx)
 				replayWindowOpen = true
 				mReplayListView.SetTitle("Hide replays")
+
+				replay.List()
 			}
 
 		}

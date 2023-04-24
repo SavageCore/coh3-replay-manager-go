@@ -1,6 +1,7 @@
 package main
 
 import (
+	"coh3-replay-manager-go/modules/game"
 	"coh3-replay-manager-go/modules/replay"
 	"context"
 )
@@ -41,4 +42,9 @@ func (a *App) Remove(fileName string) {
 
 func (a *App) RemoveLocal(filename string) {
 	replay.Remove(filename)
+}
+
+// Function to return current game version
+func (a *App) GetGameVersion() string {
+	return game.GetGameVersion()
 }

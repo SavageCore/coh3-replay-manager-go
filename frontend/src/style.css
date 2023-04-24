@@ -1,14 +1,17 @@
+/* Define var --color-errorContrast */
+:root {
+  /* --color-error: #d43939; */
+  --color-errorShade: #7f2222;
+  --color-errorTint: #e07474;
+}
+
 body.dark {
-  --bg-color: #1c242d;
-  --bg-secondary-color: #242f39;
+  --bg-color: #252525;
+  --bg-secondary-color: #33322e;
   --font-color: #f8f9fa;
   --color-grey: #6c757d;
   --color-darkGrey: #343a40;
-}
-
-#app {
-  height: 100vh;
-  text-align: center;
+  --border-color: #252525;
 }
 
 .faction-icon {

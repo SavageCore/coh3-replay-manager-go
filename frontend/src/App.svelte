@@ -1,5 +1,6 @@
 <script lang="ts">
   import { List } from '../wailsjs/go/main/App.js';
+  import { Container } from 'svelte-chota';
   import 'chota';
 
   import Table from './Table.svelte';
@@ -28,10 +29,14 @@
 </script>
 
 <main>
-  <h1>Replay Manager</h1>
-  {#if replays && replays.length > 0}
-    <Table tableData={$replayStore} />
-  {/if}
+  <!-- Show a table of replays -->
+  <Container>
+    <h1>Replays</h1>
+
+    {#if replays && replays.length > 0}
+      <Table tableData={$replayStore} />
+    {/if}
+  </Container>
 </main>
 
 <style>
