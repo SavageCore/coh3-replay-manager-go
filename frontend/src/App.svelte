@@ -64,7 +64,7 @@
 </script>
 
 <script lang="ts">
-  import { List } from '../wailsjs/go/main/App.js';
+  import { GetGameVersion, List } from '../wailsjs/go/main/App.js';
   import { Container, Details, Field } from 'svelte-chota';
   import 'chota';
 
@@ -90,6 +90,7 @@
 
   let replays;
   let unfilteredReplays;
+  let currentGameVersion;
 
   if (
     window.matchMedia &&
@@ -106,17 +107,19 @@
   }
 
   async function main() {
+    currentGameVersion = await GetGameVersion();
+
     await list();
   }
 
   async function filter(property, needle) {
     replays = unfilteredReplays.filter((replay) => {
+      if (needle === 'all') {
+        return true;
+      }
+
       if (property.includes('.')) {
         const [parent, child] = property.split('.');
-
-        if (property === 'Map.Filename' && needle === 'all') {
-          return true;
-        }
 
         return replay[parent][child] === needle;
       }
@@ -146,6 +149,21 @@
             <option value={key}>{map.name}</option>
           {/each}
         </select>
+      </Field>
+      <Field label="Hide incompatible">
+        <input
+          type="checkbox"
+          on:change={(event) => {
+            // If unchecked, show all replays
+            if (!event.target.checked) {
+              filter('Version', 'all');
+
+              return;
+            }
+            // If checked, filter out replays that aren't compatible with the current game version
+            filter('Version', Number(currentGameVersion));
+          }}
+        />
       </Field>
     </Details>
     <h1>Replays</h1>
