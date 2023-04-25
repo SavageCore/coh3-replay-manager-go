@@ -12,6 +12,7 @@
   import Column from './Column.svelte';
 
   import { mapDetailsMap } from './App.svelte';
+  import Modal from './Modal.svelte';
 
   export let tableData;
 
@@ -19,6 +20,10 @@
   let sortColumn = 'Version';
   let sortDirection = 'desc';
   let currentGameVersion;
+  let showDeleteModal = false;
+  let deleteCloseButtonText = 'Cancel';
+  let deleteTarget = null;
+
   async function main() {
     currentGameVersion = await GetGameVersion();
 
@@ -76,8 +81,17 @@
     await Play(fileName);
   }
 
+  async function confirmRemove(fileName) {
+    showDeleteModal = true;
+    deleteTarget = fileName;
+  }
+
   async function remove(fileName) {
     await Remove(fileName);
+
+    // Remove the deleted replay from the table
+    tableData = tableData.filter((replay) => replay.Filename !== fileName);
+    deleteTarget = null;
   }
 
   const formatLength = (ticks) => {
@@ -228,7 +242,7 @@
             <Col
               ><Button
                 error
-                on:click={() => remove(replay.Filename)}
+                on:click={() => confirmRemove(replay.Filename)}
                 icon={mdiDelete}
               /></Col
             >
@@ -238,6 +252,26 @@
     {/each}
   </tbody>
 </table>
+
+<Modal
+  showModal={showDeleteModal}
+  closeButtonText={deleteCloseButtonText}
+  closeFunction={(dialog) => {
+    showDeleteModal = false;
+    dialog.close();
+  }}
+  confirmFunction={(dialog) => {
+    showDeleteModal = false;
+
+    remove(deleteTarget);
+    dialog.close();
+  }}
+  confirmClass="error"
+>
+  <h2 slot="header">Confirm</h2>
+
+  <p>Are you sure you want to delete this replay?</p>
+</Modal>
 
 <style>
   table,

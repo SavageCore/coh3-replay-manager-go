@@ -68,7 +68,6 @@
   import { Card, Container, Field } from 'svelte-chota';
   import { CollapsibleCard } from 'svelte-collapsible';
   import 'chota';
-
   import Table from './Table.svelte';
   import { replays as replayStore } from './data-store.js';
 
@@ -92,7 +91,7 @@
   let replays;
   let unfilteredReplays;
   let currentGameVersion;
-  let open = false;
+  let filtersOpen = false;
 
   const playerCounts = [2, 4, 6, 8];
 
@@ -144,7 +143,7 @@
 <main>
   <Container>
     <CollapsibleCard
-      {open}
+      bind:open={filtersOpen}
       on:open={() => {
         const header = document.querySelector('#filter-header');
         const h2 = document.createElement('h2');
