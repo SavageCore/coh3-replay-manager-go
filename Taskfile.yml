@@ -8,9 +8,6 @@ tasks:
       - assets
     cmds:
       - wails build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -upx -clean -platform=windows/amd64
-    env:
-      CGO_ENABLED: 1
-      CC: C:\msys64\mingw64\bin\gcc.exe
   dev:
     deps:
       - assets
