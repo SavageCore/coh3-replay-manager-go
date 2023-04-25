@@ -1,32 +1,20 @@
 <script context="module">
   export const mapDetailsMap = {
-    twin_beach_2p_mkii: {
-      name: 'Twin Beaches',
-      url: twinBeachesIcon,
-    },
-    desert_village_2p_mkiii: {
-      name: 'Road to Tunis',
-      url: roadToTunisIcon,
-    },
-    cliff_crossing_2p: {
-      name: 'Taranto Coastline',
-      url: tarantoCoastlineIcon,
+    rural_castle_4p: {
+      name: 'Aere Perennius',
+      url: aerePerenniusIcon,
     },
     rails_and_sand_4p: {
       name: "Campbell's Convoy",
       url: campbellsConvoyIcon,
     },
-    rural_town_4p: {
-      name: 'Pachino Farmlands',
-      url: pachinoFarmlandsIcon,
+    '(2) crossroads': {
+      name: 'Crossroads',
+      url: crossroadsIcon,
     },
-    torrente_4p_mkiii: {
-      name: 'Torrente',
-      url: torrenteIcon,
-    },
-    rural_castle_4p: {
-      name: 'Aere Perennius',
-      url: aerePerenniusIcon,
+    gardens_2p_mm: {
+      name: 'Gardens',
+      url: gardensIcon,
     },
     desert_airfield_6p_mkii: {
       name: 'Gazala Landing Ground',
@@ -36,10 +24,6 @@
       name: "L'Aquila",
       url: laquilaIcon,
     },
-    winter_line_8p_mkii: {
-      name: 'Winter Line',
-      url: winterLineIcon,
-    },
     mountain_ruins_6p: {
       name: 'Mignano Gap 3v3',
       url: mignanoGap6pIcon,
@@ -48,17 +32,33 @@
       name: 'Mignano Gap 4v4',
       url: mignanoGap8pIcon,
     },
-    gardens_2p_mm: {
-      name: 'Gardens',
-      url: gardensIcon,
-    },
-    '(2) crossroads': {
-      name: 'Crossroads',
-      url: crossroadsIcon,
+    rural_town_4p: {
+      name: 'Pachino Farmlands',
+      url: pachinoFarmlandsIcon,
     },
     rural_town_2p_mkii: {
       name: 'Pachino Stalemate',
       url: pachinoFarmlandsMkiiIcon,
+    },
+    desert_village_2p_mkiii: {
+      name: 'Road to Tunis',
+      url: roadToTunisIcon,
+    },
+    cliff_crossing_2p: {
+      name: 'Taranto Coastline',
+      url: tarantoCoastlineIcon,
+    },
+    torrente_4p_mkiii: {
+      name: 'Torrente',
+      url: torrenteIcon,
+    },
+    twin_beach_2p_mkii: {
+      name: 'Twin Beaches',
+      url: twinBeachesIcon,
+    },
+    winter_line_8p_mkii: {
+      name: 'Winter Line',
+      url: winterLineIcon,
     },
   };
 </script>
