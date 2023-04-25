@@ -65,7 +65,8 @@
 
 <script lang="ts">
   import { GetGameVersion, List } from '../wailsjs/go/main/App.js';
-  import { Container, Details, Field } from 'svelte-chota';
+  import { Card, Container, Field } from 'svelte-chota';
+  import { CollapsibleCard } from 'svelte-collapsible';
   import 'chota';
 
   import Table from './Table.svelte';
@@ -91,6 +92,7 @@
   let replays;
   let unfilteredReplays;
   let currentGameVersion;
+  let open = false;
 
   const playerCounts = [2, 4, 6, 8];
 
@@ -141,56 +143,72 @@
 
 <main>
   <Container>
-    <Details>
-      <span slot="summary">Filters</span>
+    <CollapsibleCard
+      {open}
+      on:open={() => {
+        const header = document.querySelector('#filter-header');
+        const h2 = document.createElement('h2');
+        h2.innerHTML = header.innerHTML;
+        h2.id = header.id;
+        header.replaceWith(h2);
+      }}
+      on:close={() => {
+        const header = document.querySelector('#filter-header');
+        const p = document.createElement('p');
+        p.innerHTML = header.innerHTML;
+        p.id = header.id;
+        header.replaceWith(p);
+      }}
+    >
+      <p slot="header" id="filter-header">Filters</p>
+      <div slot="body">
+        <Field label="Map">
+          <select
+            on:change={(event) => {
+              filter('Map.Filename', event.target.value);
+            }}
+          >
+            <option value="all" selected>All</option>
+            {#each Object.entries(mapDetailsMap) as [key, map]}
+              <option value={key}>{map.name}</option>
+            {/each}
+          </select>
+        </Field>
+        <Field label="Player count">
+          <select
+            on:change={(event) => {
+              if (event.target.value === 'all') {
+                filter('Players', 'all');
 
-      <Field label="Map">
-        <select
-          on:change={(event) => {
-            filter('Map.Filename', event.target.value);
-          }}
-        >
-          <option value="all" selected>All</option>
-          {#each Object.entries(mapDetailsMap) as [key, map]}
-            <option value={key}>{map.name}</option>
-          {/each}
-        </select>
-      </Field>
-      <Field label="Player count">
-        <select
-          on:change={(event) => {
-            if (event.target.value === 'all') {
-              filter('Players', 'all');
+                return;
+              }
 
-              return;
-            }
+              filter('Players', Number(event.target.value));
+            }}
+          >
+            <option value="all" selected>All</option>
+            {#each playerCounts as count}
+              <option value={count}>{count}</option>
+            {/each}
+          </select>
+        </Field>
+        <Field label="Hide incompatible">
+          <input
+            type="checkbox"
+            on:change={(event) => {
+              // If unchecked, show all replays
+              if (!event.target.checked) {
+                filter('Version', 'all');
 
-            filter('Players', Number(event.target.value));
-          }}
-        >
-          <option value="all" selected>All</option>
-          {#each playerCounts as count}
-            <option value={count}>{count}</option>
-          {/each}
-        </select>
-      </Field>
-      <Field label="Hide incompatible">
-        <input
-          type="checkbox"
-          on:change={(event) => {
-            // If unchecked, show all replays
-            if (!event.target.checked) {
-              filter('Version', 'all');
-
-              return;
-            }
-            // If checked, filter out replays that aren't compatible with the current game version
-            filter('Version', Number(currentGameVersion));
-          }}
-        />
-      </Field>
-    </Details>
-    <h1>Replays</h1>
+                return;
+              }
+              // If checked, filter out replays that aren't compatible with the current game version
+              filter('Version', Number(currentGameVersion));
+            }}
+          />
+        </Field>
+      </div>
+    </CollapsibleCard>
 
     {#if replays && replays.length > 0}
       <Table tableData={$replayStore} />

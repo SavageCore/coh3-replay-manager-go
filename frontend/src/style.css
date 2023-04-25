@@ -19,3 +19,8 @@ body.dark {
   height: 20px;
   margin-right: 2px;
 }
+
+.card,
+table {
+  margin-top: var(--grid-gutter);
+}

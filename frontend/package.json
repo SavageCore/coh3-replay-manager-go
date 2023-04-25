@@ -23,6 +23,7 @@
     "vite": "^3.0.0"
   },
   "dependencies": {
-    "@mdi/js": "^7.2.96"
+    "@mdi/js": "^7.2.96",
+    "svelte-collapsible": "^0.2.1"
   }
 }
