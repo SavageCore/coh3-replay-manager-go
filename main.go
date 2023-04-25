@@ -64,6 +64,13 @@ func main() {
 
 	systray.Register(onReady, onExit)
 
+	StartHidden := true
+
+	// If in development mode, StartHidden is set to false so window is visible
+	if os.Getenv("DEV_MODE") == "true" {
+		StartHidden = false
+	}
+
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "Company of Heroes 3 Replay Manager",
@@ -78,7 +85,7 @@ func main() {
 		Bind: []interface{}{
 			app,
 		},
-		StartHidden:       true,
+		StartHidden:       StartHidden,
 		HideWindowOnClose: true,
 	})
 
