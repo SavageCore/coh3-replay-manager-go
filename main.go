@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/Teages/go-autostart"
@@ -304,6 +305,10 @@ func autoUpdate() bool {
 
 				// Restart the app
 				cmd := exec.Command(exePath)
+				cmd.SysProcAttr = &syscall.SysProcAttr{
+					HideWindow:    true,
+					CreationFlags: 0x08000000,
+				}
 				_, err = cmd.Output()
 				if err != nil {
 					fmt.Println("Failed to restart:", err)

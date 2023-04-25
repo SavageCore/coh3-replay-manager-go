@@ -14,6 +14,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/mholt/archiver/v4"
@@ -189,6 +190,10 @@ func Parse(filename string) (ReplayObject, error) {
 	// Example: flank.exe /path/to/replay.rec
 
 	cmd := exec.Command("./flank.exe", replayFilePath)
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		HideWindow:    true,
+		CreationFlags: 0x08000000,
+	}
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println("Error:", err)

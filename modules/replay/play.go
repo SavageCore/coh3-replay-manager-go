@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 
 	"github.com/mitchellh/go-ps"
@@ -33,6 +34,10 @@ func Play(fileName string) {
 
 	// Launch the game
 	steamCmd := exec.Command(steamPath, args...)
+	steamCmd.SysProcAttr = &syscall.SysProcAttr{
+		HideWindow:    true,
+		CreationFlags: 0x08000000,
+	}
 
 	cmdErr := steamCmd.Start()
 

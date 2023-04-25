@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"syscall"
 )
 
 type CIM_DataFile struct {
@@ -20,6 +21,10 @@ func GetGameVersion() string {
 
 	// wmic datafile where name="C:\\Program Files (x86)\\Steam\\steamapps\\common\\Company of Heroes 3\\RelicCoH3.exe" get Version /value
 	cmd := exec.Command("wmic", "datafile", "where", "name=\""+exePath+"\"", "get", "Version", "/value")
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		HideWindow:    true,
+		CreationFlags: 0x08000000,
+	}
 	out, err := cmd.Output()
 	if err != nil {
 		fmt.Println(err)
