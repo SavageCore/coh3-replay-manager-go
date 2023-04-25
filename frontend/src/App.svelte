@@ -165,6 +165,7 @@
         <Field label="Map">
           <select
             on:change={(event) => {
+              // @ts-ignore
               filter('Map.Filename', event.target.value);
             }}
           >
@@ -177,12 +178,14 @@
         <Field label="Player count">
           <select
             on:change={(event) => {
+              // @ts-ignore
               if (event.target.value === 'all') {
                 filter('Players', 'all');
 
                 return;
               }
 
+              // @ts-ignore
               filter('Players', Number(event.target.value));
             }}
           >
@@ -197,6 +200,7 @@
             type="checkbox"
             on:change={(event) => {
               // If unchecked, show all replays
+              // @ts-ignore
               if (!event.target.checked) {
                 filter('Version', 'all');
 
