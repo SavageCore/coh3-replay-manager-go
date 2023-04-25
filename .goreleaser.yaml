@@ -11,6 +11,10 @@ builds:
     ldflags: -s -w -H=windowsgui -extldflags '-static -static-libgcc'
     flags:
       - -buildmode=exe
+    hooks:
+      post:
+        - wails build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -upx -clean -platform=windows/amd64
+        - cp build/bin/coh3-replay-manager-go.exe dist/coh3-replay-manager-go_windows_amd64_v1
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of uname.
