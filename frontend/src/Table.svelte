@@ -1,21 +1,4 @@
 <script>
-  // Import map icons
-  import aerePerenniusIcon from './assets/icons/maps/aere_perennius.webp';
-  import campbellsConvoyIcon from './assets/icons/maps/campbells_convoy.webp';
-  import gardensIcon from './assets/icons/maps/gardens.png';
-  import crossroadsIcon from './assets/icons/maps/gardens.png';
-  import gazalaLandingGroundIcon from './assets/icons/maps/gazala_landing_ground.webp';
-  import laquilaIcon from './assets/icons/maps/laquila.webp';
-  import mignanoGap6pIcon from './assets/icons/maps/mignano_gap_6p.png';
-  import mignanoGap8pIcon from './assets/icons/maps/mignano_gap.webp';
-  import pachinoFarmlandsIcon from './assets/icons/maps/pachino_farmlands.webp';
-  import pachinoFarmlandsMkiiIcon from './assets/icons/maps/pachino_farmlands_mkii.png';
-  import roadToTunisIcon from './assets/icons/maps/road_to_tunis.webp';
-  import tarantoCoastlineIcon from './assets/icons/maps/taranto_coastline.webp';
-  import torrenteIcon from './assets/icons/maps/torrente.webp';
-  import twinBeachesIcon from './assets/icons/maps/twin_beaches.webp';
-  import winterLineIcon from './assets/icons/maps/winter_line.webp';
-
   // Import faction icons
   import dakIcon from './assets/icons/factions/dak.webp';
   import britishIcon from './assets/icons/factions/british.webp';
@@ -27,6 +10,8 @@
 
   import { Play, Remove, GetGameVersion } from '../wailsjs/go/main/App.js';
   import Column from './Column.svelte';
+
+  import { mapDetailsMap } from './App.svelte';
 
   export let tableData;
 
@@ -166,69 +151,6 @@
     }
 
     return `${team1.join(' ')} vs. ${team2.join(' ')}`;
-  };
-
-  const mapDetailsMap = {
-    twin_beach_2p_mkii: {
-      name: 'Twin Beaches',
-      url: twinBeachesIcon,
-    },
-    desert_village_2p_mkiii: {
-      name: 'Road to Tunis',
-      url: roadToTunisIcon,
-    },
-    cliff_crossing_2p: {
-      name: 'Taranto Coastline',
-      url: tarantoCoastlineIcon,
-    },
-    rails_and_sand_4p: {
-      name: "Campbell's Convoy",
-      url: campbellsConvoyIcon,
-    },
-    rural_town_4p: {
-      name: 'Pachino Farmlands',
-      url: pachinoFarmlandsIcon,
-    },
-    torrente_4p_mkiii: {
-      name: 'Torrente',
-      url: torrenteIcon,
-    },
-    rural_castle_4p: {
-      name: 'Aere Perennius',
-      url: aerePerenniusIcon,
-    },
-    desert_airfield_6p_mkii: {
-      name: 'Gazala Landing Ground',
-      url: gazalaLandingGroundIcon,
-    },
-    industrial_railyard_6p_mkii: {
-      name: "L'Aquila",
-      url: laquilaIcon,
-    },
-    winter_line_8p_mkii: {
-      name: 'Winter Line',
-      url: winterLineIcon,
-    },
-    mountain_ruins_8p_mkii: {
-      name: 'Mignano Gap',
-      url: mignanoGap8pIcon,
-    },
-    mountain_ruins_6p: {
-      name: 'Mignano Gap',
-      url: mignanoGap6pIcon,
-    },
-    gardens_2p_mm: {
-      name: 'Gardens',
-      url: gardensIcon,
-    },
-    '(2) crossroads': {
-      name: 'Crossroads',
-      url: crossroadsIcon,
-    },
-    rural_town_2p_mkii: {
-      name: 'Pachino Stalemate',
-      url: pachinoFarmlandsMkiiIcon,
-    },
   };
 
   const factionIconMap = {
