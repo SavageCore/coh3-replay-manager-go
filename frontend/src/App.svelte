@@ -92,6 +92,8 @@
   let unfilteredReplays;
   let currentGameVersion;
 
+  const playerCounts = [2, 4, 6, 8];
+
   if (
     window.matchMedia &&
     window.matchMedia('(prefers-color-scheme: dark)').matches
@@ -124,6 +126,10 @@
         return replay[parent][child] === needle;
       }
 
+      if (property === 'Players') {
+        return replay.Players.length === needle;
+      }
+
       return replay[property] === needle;
     });
 
@@ -147,6 +153,24 @@
           <option value="all" selected>All</option>
           {#each Object.entries(mapDetailsMap) as [key, map]}
             <option value={key}>{map.name}</option>
+          {/each}
+        </select>
+      </Field>
+      <Field label="Player count">
+        <select
+          on:change={(event) => {
+            if (event.target.value === 'all') {
+              filter('Players', 'all');
+
+              return;
+            }
+
+            filter('Players', Number(event.target.value));
+          }}
+        >
+          <option value="all" selected>All</option>
+          {#each playerCounts as count}
+            <option value={count}>{count}</option>
           {/each}
         </select>
       </Field>
