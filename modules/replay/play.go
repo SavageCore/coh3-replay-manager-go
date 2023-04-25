@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gen2brain/beeep"
 	"github.com/mitchellh/go-ps"
 )
 
@@ -46,13 +45,6 @@ func Play(fileName string) {
 	if cmdErr != nil {
 		fmt.Println("Steam exited with error:", cmdErr)
 		return
-	}
-
-	title := "Replay launched 🚀"
-	message := "⚠️ Look out for a confirmation window from Steam, allowing you to launch the game. ⚠️"
-	err := beeep.Notify(title, message, "")
-	if err != nil {
-		panic(err)
 	}
 
 	processName := "RelicCoH3.exe"
