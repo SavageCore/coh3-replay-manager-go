@@ -18,8 +18,6 @@ jobs:
         run: go install github.com/akavel/rsrc@latest
       - name: Install go-bindata
         run: go install github.com/go-bindata/go-bindata/...@latest
-      - name: Generate icon.syso file
-        run: rsrc -ico assets/icons/icon.ico -o icon.syso
       - name: Generate bindata.go file
         run: go-bindata assets/...
       - name: Add lint ignore to bindata.go
