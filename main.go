@@ -4,6 +4,7 @@ import (
 	"coh3-replay-manager-go/modules/game"
 	"coh3-replay-manager-go/modules/replay"
 	"coh3-replay-manager-go/modules/utils"
+	"context"
 	"embed"
 	"fmt"
 	"io"
@@ -34,6 +35,7 @@ var assets embed.FS
 // Create an instance of the app structure
 var app = NewApp()
 var replayWindowOpen = false
+var mReplayListView *systray.MenuItem
 
 // var wv webview.WebView
 
@@ -83,11 +85,12 @@ func main() {
 		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
 		OnStartup:        app.startup,
 		OnShutdown:       app.shutdown,
+		OnBeforeClose:    beforeClose,
 		Bind: []interface{}{
 			app,
 		},
 		StartHidden:       StartHidden,
-		HideWindowOnClose: true,
+		HideWindowOnClose: false,
 	})
 
 	if err != nil {
@@ -114,7 +117,7 @@ func onReady() {
 	systray.SetTooltip("Company of Heroes 3 Replay Manager")
 
 	mSetStartup := systray.AddMenuItem("Launch on startup", "Start this app when your computer starts")
-	mReplayListView := systray.AddMenuItem("View replays", "View saved and downloaded replays")
+	mReplayListView = systray.AddMenuItem("View replays", "View saved and downloaded replays")
 	systray.AddSeparator()
 	mAbout := systray.AddMenuItem(fmt.Sprintf("About (%s)", CurrentVersion), "")
 	mQuit := systray.AddMenuItem("Exit", "")
@@ -323,4 +326,16 @@ func autoUpdate() bool {
 	} else {
 		return false
 	}
+}
+
+func beforeClose(ctx context.Context) bool {
+	// Hide the window
+	runtime.Hide(ctx)
+
+	// Update the systray menu item
+	replayWindowOpen = false
+	mReplayListView.SetTitle("View replays")
+
+	// Return true to prevent the app from closing
+	return true
 }

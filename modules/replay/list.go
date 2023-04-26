@@ -63,8 +63,6 @@ func List() []Replay {
 			}
 
 			if cachedReplay.Players != nil {
-				fmt.Println("Using cached replay: " + file.Name())
-
 				players := []Player{}
 
 				for _, player := range cachedReplay.Players {
