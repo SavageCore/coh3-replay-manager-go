@@ -6,6 +6,8 @@
   export let confirmClass = '';
   export let confirmButtonText = 'Confirm';
   export let confirmFunction = null;
+  export let buttons = true;
+  export let padding = null;
 
   import { Button, Row } from 'svelte-chota';
 
@@ -20,22 +22,24 @@
   on:close={() => (showModal = false)}
   on:click|self={() => dialog.close()}
 >
-  <div on:click|stopPropagation>
+  <div on:click|stopPropagation style:padding>
     <slot name="header" />
     <slot />
     <Row>
       <!-- svelte-ignore a11y-autofocus -->
-      <Button
-        autofocus
-        class={closeClass}
-        on:click={() => closeFunction(dialog)}>{closeButtonText}</Button
-      >
-      {#if confirmFunction}
+      {#if buttons}
         <Button
-          error
-          class={confirmClass}
-          on:click={() => confirmFunction(dialog)}>{confirmButtonText}</Button
+          autofocus
+          class={closeClass}
+          on:click={() => closeFunction(dialog)}>{closeButtonText}</Button
         >
+        {#if confirmFunction}
+          <Button
+            error
+            class={confirmClass}
+            on:click={() => confirmFunction(dialog)}>{confirmButtonText}</Button
+          >
+        {/if}
       {/if}
     </Row>
   </div>
@@ -47,18 +51,26 @@
     border-radius: 0.25em;
     border: none;
     padding: 0;
-  }
-  dialog::backdrop {
-    background: rgba(0, 0, 0, 0.3);
-  }
-  dialog > div {
-    padding: 1em;
     background-color: var(--bg-color);
     color: var(--font-color);
   }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  dialog > div {
+    padding: 1em;
+  }
+
   dialog[open] {
     animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
+
+  dialog[open]::backdrop {
+    animation: fade 0.2s ease-out;
+  }
+
   @keyframes zoom {
     from {
       transform: scale(0.95);
@@ -67,9 +79,7 @@
       transform: scale(1);
     }
   }
-  dialog[open]::backdrop {
-    animation: fade 0.2s ease-out;
-  }
+
   @keyframes fade {
     from {
       opacity: 0;

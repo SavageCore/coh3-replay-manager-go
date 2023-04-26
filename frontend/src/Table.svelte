@@ -23,6 +23,9 @@
   let showDeleteModal = false;
   let deleteCloseButtonText = 'Cancel';
   let deleteTarget = null;
+  let showLargeImageModal = false;
+  let largeImgSrc = null;
+  let largeMapName = null;
 
   async function main() {
     currentGameVersion = await GetGameVersion();
@@ -173,6 +176,14 @@
     Wehrmacht: wehrmachtIcon,
     Americans: americanIcon,
   };
+
+  const enlargeImage = (fileName) => {
+    largeImgSrc = mapDetailsMap[fileName].url;
+    largeMapName = mapDetailsMap[fileName].name;
+    // Ensure the modal is visible by flipping the boolean
+    showLargeImageModal = false;
+    showLargeImageModal = true;
+  };
 </script>
 
 <div style="height: 40em; overflow: auto;">
@@ -215,8 +226,16 @@
     <tbody>
       {#each tableData as replay}
         <tr>
-          <td class="center"
-            >{@html displayMap(replay.Map.Filename, replay.Players)}</td
+          <td
+            class="center"
+            on:click={() => {
+              enlargeImage(replay.Map.Filename);
+            }}
+            on:keydown={() => {
+              enlargeImage(replay.Map.Filename);
+            }}
+          >
+            {@html displayMap(replay.Map.Filename, replay.Players)}</td
           >
           <td>{@html formatPlayers(replay.Players)}</td>
           <td
@@ -273,6 +292,11 @@
   <h2 slot="header">Confirm</h2>
 
   <p>Are you sure you want to delete this replay?</p>
+</Modal>
+
+<Modal showModal={showLargeImageModal} buttons={false} padding={'0 0 0.5em 0'}>
+  <img src={largeImgSrc} alt="Large map" />
+  <p style="padding-left: 0.5em">{largeMapName}</p>
 </Modal>
 
 <style>
