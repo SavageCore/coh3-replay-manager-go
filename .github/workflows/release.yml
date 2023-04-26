@@ -23,8 +23,6 @@ jobs:
         run: go install github.com/akavel/rsrc@latest
       - name: Install go-bindata
         run: go install github.com/go-bindata/go-bindata/...@latest
-      - name: Generate icon.syso file
-        run: rsrc -ico assets/icons/icon.ico -o icon.syso
       - name: Generate bindata.go file
         run: go-bindata assets/...
       - name: Add lint ignore to bindata.go
@@ -33,6 +31,8 @@ jobs:
           echo "//lint:file-ignore SA1019,ST1005 Ignore it's generated" > bindata.go
           Get-Content bindata.temp | Out-File bindata.go -Append
           rm bindata.temp
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
       - uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
