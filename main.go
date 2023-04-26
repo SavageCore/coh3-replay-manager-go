@@ -16,6 +16,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/Teages/go-autostart"
 	"github.com/fynelabs/selfupdate"
 	"github.com/gen2brain/beeep"
@@ -240,7 +241,17 @@ func autoUpdate() bool {
 		fmt.Println(err)
 	}
 
-	if release.TagName != CurrentVersion {
+	currentVersionSem, err := semver.NewVersion(CurrentVersion)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	latestVersionSem, err := semver.NewVersion(release.TagName)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	if currentVersionSem.LessThan(latestVersionSem) {
 		// New version available
 		title := "New version available"
 		message := fmt.Sprintf("Version %s is available. Downloading and restarting the app.", release.TagName)

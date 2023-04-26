@@ -39,8 +39,6 @@ jobs:
           args: install upx
       - name: Build the app
         run: wails build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -upx -clean -platform=windows/amd64
-      - name: Debug - git diff
-        run: git diff
       - uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser

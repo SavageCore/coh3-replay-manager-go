@@ -3,6 +3,7 @@ module coh3-replay-manager-go
 go 1.20
 
 require (
+	github.com/Masterminds/semver/v3 v3.2.1
 	github.com/Teages/go-autostart v0.0.0-20220902154128-6e07ff286975
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gen2brain/beeep v0.0.0-20230307103607-6e717729cb4f
