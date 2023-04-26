@@ -175,83 +175,85 @@
   };
 </script>
 
-<table>
-  <thead>
-    <tr>
-      <Column
-        column={{ field: 'Map.Filename', label: 'Map' }}
-        {sortColumn}
-        {sortDirection}
-        {sort}
-      />
-      <Column
-        column={{ field: 'Players' }}
-        {sortColumn}
-        {sortDirection}
-        {sort}
-      />
-      <Column
-        column={{ field: 'Version' }}
-        {sortColumn}
-        {sortDirection}
-        {sort}
-      />
-      <Column
-        column={{ field: 'Length' }}
-        {sortColumn}
-        {sortDirection}
-        {sort}
-      />
-      <Column
-        column={{ field: 'Timestamp', label: 'Date' }}
-        {sortColumn}
-        {sortDirection}
-        {sort}
-      />
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {#each tableData as replay}
+<div style="height: 40em; overflow: auto;">
+  <table>
+    <thead>
       <tr>
-        <td class="center"
-          >{@html displayMap(replay.Map.Filename, replay.Players)}</td
-        >
-        <td>{@html formatPlayers(replay.Players)}</td>
-        <td
-          class:version-mismatch={currentGameVersion != replay.Version}
-          title={currentGameVersion != replay.Version
-            ? 'Version Mismatch - playback unlikely'
-            : ''}
-        >
-          {#if currentGameVersion != replay.Version}
-            <Icon src={mdiAlert} color="yellow" />
-          {/if}
-          {replay.Version}
-        </td>
-        <td>{formatLength(replay.Length)}</td>
-        <td>{replay.Timestamp}</td>
-        <td class="center">
-          <Row>
-            <Col
-              ><Button
-                on:click={() => play(replay.Filename)}
-                icon={mdiPlay}
-              /></Col
-            >
-            <Col
-              ><Button
-                error
-                on:click={() => confirmRemove(replay.Filename)}
-                icon={mdiDelete}
-              /></Col
-            >
-          </Row></td
-        >
+        <Column
+          column={{ field: 'Map.Filename', label: 'Map' }}
+          {sortColumn}
+          {sortDirection}
+          {sort}
+        />
+        <Column
+          column={{ field: 'Players' }}
+          {sortColumn}
+          {sortDirection}
+          {sort}
+        />
+        <Column
+          column={{ field: 'Version' }}
+          {sortColumn}
+          {sortDirection}
+          {sort}
+        />
+        <Column
+          column={{ field: 'Length' }}
+          {sortColumn}
+          {sortDirection}
+          {sort}
+        />
+        <Column
+          column={{ field: 'Timestamp', label: 'Date' }}
+          {sortColumn}
+          {sortDirection}
+          {sort}
+        />
+        <th>Action</th>
       </tr>
-    {/each}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      {#each tableData as replay}
+        <tr>
+          <td class="center"
+            >{@html displayMap(replay.Map.Filename, replay.Players)}</td
+          >
+          <td>{@html formatPlayers(replay.Players)}</td>
+          <td
+            class:version-mismatch={currentGameVersion != replay.Version}
+            title={currentGameVersion != replay.Version
+              ? 'Version Mismatch - playback unlikely'
+              : ''}
+          >
+            {#if currentGameVersion != replay.Version}
+              <Icon src={mdiAlert} color="yellow" />
+            {/if}
+            {replay.Version}
+          </td>
+          <td>{formatLength(replay.Length)}</td>
+          <td>{replay.Timestamp}</td>
+          <td class="center">
+            <Row>
+              <Col
+                ><Button
+                  on:click={() => play(replay.Filename)}
+                  icon={mdiPlay}
+                /></Col
+              >
+              <Col
+                ><Button
+                  error
+                  on:click={() => confirmRemove(replay.Filename)}
+                  icon={mdiDelete}
+                /></Col
+              >
+            </Row></td
+          >
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
 
 <Modal
   showModal={showDeleteModal}
@@ -324,5 +326,11 @@
   td.center {
     text-align: center;
     vertical-align: middle;
+  }
+
+  ::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background-color: transparent;
   }
 </style>
