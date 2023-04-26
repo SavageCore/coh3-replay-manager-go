@@ -1,0 +1,6 @@
+frontend/wailsjs/go/main/App.d.ts -text
+frontend/wailsjs/go/main/App.js -text
+frontend/wailsjs/runtime/package.json -text
+frontend/wailsjs/runtime/runtime.d.ts -text
+frontend/wailsjs/runtime/runtime.js -text
+go.mod -text

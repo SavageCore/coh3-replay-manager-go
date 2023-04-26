@@ -32,11 +32,15 @@ jobs:
           Get-Content bindata.temp | Out-File bindata.go -Append
           rm bindata.temp
       - name: Install Wails
-        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@v2.4.1
       - name: Install upx
         uses: crazy-max/ghaction-chocolatey@v1
         with:
           args: install upx
+      - name: Build the app
+        run: wails build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -upx -clean -platform=windows/amd64
+      - name: Debug - git diff
+        run: git diff
       - uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
