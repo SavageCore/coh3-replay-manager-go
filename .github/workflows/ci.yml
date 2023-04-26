@@ -28,6 +28,8 @@ jobs:
           echo "//lint:file-ignore SA1019,ST1005 Ignore it's generated" > bindata.go
           Get-Content bindata.temp | Out-File bindata.go -Append
           rm bindata.temp
+      - name: Install Wails
+        run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
       - name: Build the app
         run: wails build -ldflags="-s -w -H=windowsgui -extldflags '-static -static-libgcc'" -upx -clean -platform=windows/amd64
       - uses: dominikh/staticcheck-action@v1.3.0
