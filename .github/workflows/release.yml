@@ -33,6 +33,10 @@ jobs:
           rm bindata.temp
       - name: Install Wails
         run: go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - name: Install upx
+        uses: crazy-max/ghaction-chocolatey@v1
+        with:
+          args: install upx
       - uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
