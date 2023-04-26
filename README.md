@@ -44,7 +44,6 @@ Install the dependencies:
 
 1. [Go](https://go.dev/doc/install)
 1. [Task](https://taskfile.dev/)
-1. [Air](https://github.com/cosmtrek/air)
 1. [go-bindata](https://github.com/go-bindata/go-bindata)
 1. [rsrc](https://github.com/akavel/rsrc)
 1. [staticcheck](https://staticcheck.io/docs/getting-started/)
