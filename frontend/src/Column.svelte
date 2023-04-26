@@ -26,4 +26,9 @@
   .sorted.desc:after {
     content: ' ▼';
   }
+
+  th {
+    padding: 0.5em;
+    padding-left: 1em;
+  }
 </style>

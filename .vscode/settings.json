@@ -10,4 +10,5 @@
     "[go]": {
         "editor.defaultFormatter": "golang.go"
     },
+    "gitlens.codeLens.enabled": false,
 }

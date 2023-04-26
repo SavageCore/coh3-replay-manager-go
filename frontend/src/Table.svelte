@@ -279,7 +279,19 @@
   td {
     border: 1px solid var(--border-color);
     border-collapse: collapse;
-    margin-bottom: 10px;
+  }
+
+  td,
+  th {
+    padding-top: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-bottom: 0.5em;
+  }
+
+  th {
+    padding: 0.5em;
+    padding-left: 1em;
   }
 
   .version-mismatch {
@@ -311,11 +323,6 @@
 
   td.center {
     text-align: center;
-    padding-left: 0;
-  }
-
-  td,
-  th {
-    padding-left: 10px;
+    vertical-align: middle;
   }
 </style>
