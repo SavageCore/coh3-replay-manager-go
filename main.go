@@ -77,7 +77,7 @@ func main() {
 
 	// Create application with options
 	err := wails.Run(&options.App{
-		Title:  "Company of Heroes 3 Replay Manager",
+		Title:  "Company of Heroes 3 Replay Manager (" + CurrentVersion + ")",
 		Width:  1024,
 		Height: 768,
 		AssetServer: &assetserver.Options{
