@@ -70,7 +70,6 @@ func InitialiseFolderWatcher() {
 
 					// Check if the file is empty
 					if fileSize == 0 {
-						fmt.Println("File is empty, skipping...")
 						continue
 					}
 
@@ -138,7 +137,6 @@ func InitialiseDownloadWatcher(ctx context.Context) {
 
 					// Check if the file is empty
 					if fileSize == 0 {
-						fmt.Println("File is empty, skipping...")
 						continue
 					}
 
