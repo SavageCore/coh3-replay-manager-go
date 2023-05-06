@@ -60,4 +60,10 @@ Run the app with live reloading:
 
 # Building 🚧
 
-1. Run `task build`
+1. Run `task build` and the app will be built to `build/bin/coh3-replay-manager-go.exe`
+
+# Releasing 🚀
+
+1. Increment `CurrentVersion` in `main.go`
+2. Push a git tag with the new version number
+3. GitHub Action will build and release the app 🎉
