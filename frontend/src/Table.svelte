@@ -32,6 +32,13 @@
 
     // Sort the table by version by default
     sort('Version', 'desc');
+
+    // Listen for new replays being downloaded and add them to the table
+    // @ts-ignore
+    window.runtime.EventsOn("replay:downloaded", (replay) => {
+      tableData.push(replay);
+      sort(sortColumn, sortDirection);
+    });
   }
 
   main();

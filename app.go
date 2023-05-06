@@ -20,6 +20,8 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+
+	go replay.InitialiseDownloadWatcher(ctx)
 }
 
 func (a *App) shutdown(ctx context.Context) {}

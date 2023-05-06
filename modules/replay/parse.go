@@ -21,26 +21,26 @@ import (
 )
 
 type ReplayObject struct {
-	Version        int    `json:"version"`
-	Timestamp      string `json:"timestamp"`
-	MatchhistoryID int    `json:"matchhistory_id"`
+	Version        int    `json:"Version"`
+	Timestamp      string `json:"Timestamp"`
+	MatchhistoryID int    `json:"MatchhistoryID"`
 	Map            struct {
-		Filename               string `json:"filename"`
-		LocalizedNameID        string `json:"localized_name_id"`
-		LocalizedDescriptionID string `json:"localized_description_id"`
-	} `json:"map"`
+		Filename               string `json:"Filename"`
+		LocalizedNameID        string `json:"LocalizedNameID"`
+		LocalizedDescriptionID string `json:"LocalizedDescriptionID"`
+	} `json:"Map"`
 	Players []struct {
-		Name      string `json:"name"`
-		Faction   string `json:"faction"`
-		Team      string `json:"team"`
-		SteamID   int64  `json:"steam_id"`
-		ProfileID int    `json:"profile_id"`
+		Name      string `json:"Name"`
+		Faction   string `json:"Faction"`
+		Team      string `json:"Team"`
+		SteamID   int64  `json:"SteamID"`
+		ProfileID int    `json:"ProfileID"`
 		Messages  []struct {
-			Message string `json:"message"`
-			Tick    int    `json:"tick"`
-		} `json:"messages"` // Change the type to the actual type if known
-	} `json:"players"`
-	Length int `json:"length"`
+			Message string `json:"Message"`
+			Tick    int    `json:"Tick"`
+		} `json:"Messages"` // Change the type to the actual type if known
+	} `json:"Players"`
+	Length int `json:"Length"`
 }
 
 func formatTime(timeString string) string {
@@ -127,7 +127,6 @@ func Parse(filename string) (ReplayObject, error) {
 		return ReplayObject{}, err
 	}
 
-	fmt.Println("Checking for flank binary...")
 	// Download the latest version of flank if it doesn't exist
 	_, err = os.Stat("flank.exe")
 	if err != nil {
@@ -183,7 +182,7 @@ func Parse(filename string) (ReplayObject, error) {
 		}
 	}
 
-	fmt.Println("Parsing replay file:", replayFilePath)
+	// fmt.Println("Parsing replay file:", replayFilePath)
 
 	// Parse the replay file with flank and return a Replay object
 	// flank returns a JSON object, so you can use the json package to parse it
