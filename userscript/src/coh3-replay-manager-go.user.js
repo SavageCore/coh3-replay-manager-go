@@ -5,7 +5,8 @@
 // @description  Add play button to cohdb.com to invoke coh3-replay-manager-go to download and play the replay
 // @author       SavageCore
 // @include      https://cohdb.com/
-// @include      https://cohdb.com/?page=*
+// @include      https://cohdb.com/replays
+// @include      https://cohdb.com/replays?page=*
 // @require      https://greasemonkey.github.io/gm4-polyfill/gm4-polyfill.js
 // @run-at       document-idle
 // ==/UserScript==
@@ -37,25 +38,40 @@ const main = async () => {
 }
 
 const addPlayButtons = () => {
-    const downloadButtons = document.querySelectorAll('a[href$="/download"]');
-    for (const button of downloadButtons) {
-        const versionElement = button.parentElement.querySelector('small > span');
-        const gameVersion = versionElement ? versionElement.textContent.replace('v', '') : '0';
-        const replayId = button.href.split('/')[4];
+    // Example download button:
+    // #replays > div > div:nth-child(1) > div:nth-child(8) > form
+    // form has action="/replays/1391/file" and class button_to
+    // The row that contains the button has class of list-group-item
+    const downloadButtons = document.querySelectorAll('form.button_to[action^="/replays/"] > button.btn.btn-outline-primary');
+    for (const downloadButton of downloadButtons) {
+        const row = downloadButton.parentElement.parentElement.parentElement;
+        const versionElement = row.querySelector('small > span:last-child')
+        const gameVersion = versionElement ? versionElement.textContent.trim() : '0';
+        const replayId = downloadButton.parentElement.action.split('/')[4];
 
-        const playButton = button.cloneNode(true);
+        const playButton = downloadButton.cloneNode(true);
 
-        button.href = `coh3-replay-manager-go://download/${replayId}/v/${gameVersion}`;
-        playButton.href = `coh3-replay-manager-go://play/${replayId}/v/${gameVersion}`;
         playButton.querySelector('i').classList.remove('fa-download');
         playButton.querySelector('i').classList.add('fa-play');
         playButton.classList.remove('btn-outline-primary');
         playButton.classList.add('btn-outline-success');
         playButton.querySelector('i').nextSibling.textContent = ' ';
-        playButton.style.height = `${button.clientHeight + 2}px`;
+        playButton.style.height = `${downloadButton.clientHeight + 2}px`;
         playButton.title = 'Play with coh3-replay-manager-go';
 
-        button.parentNode.insertBefore(playButton, button.nextSibling);
+        playButton.addEventListener('click', e => {
+            e.preventDefault();
+            console.log('Play clicked');
+            window.location.href = `coh3-replay-manager-go://play/${replayId}/v/${gameVersion}`;
+        });
+
+        downloadButton.addEventListener('click', e => {
+            e.preventDefault();
+            console.log('Download clicked');
+            window.location.href = `coh3-replay-manager-go://download/${replayId}/v/${gameVersion}`;
+        });
+
+        downloadButton.parentNode.parentNode.insertBefore(playButton, downloadButton.nextSibling);
     }
 }
 
