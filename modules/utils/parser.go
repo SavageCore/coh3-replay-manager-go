@@ -39,7 +39,7 @@ type ReplayObject struct {
 
 func ParseReplay(filename string) (ReplayObject, error) {
 	user := GetUsername()
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
+	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
 	replayFilePath := filepath.Join(replayDir, filename)
 
 	_, err := os.Stat(replayFilePath)

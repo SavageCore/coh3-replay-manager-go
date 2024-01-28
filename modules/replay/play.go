@@ -24,7 +24,7 @@ func Play(fileName string) {
 
 	user := utils.GetUsername()
 	playbackDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
-	replayDir := playbackDir
+	replayDir := filepath.Join(playbackDir, "replays")
 
 	srcFile := filepath.Join(replayDir, fileName)
 	destinationFile := filepath.Join(playbackDir, fileName)
