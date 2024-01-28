@@ -115,7 +115,7 @@ func onExit() {
 }
 
 func parseUrlInput(input string) {
-	re := regexp.MustCompile(`^([A-Za-z]+)/(\d+)/v/(\d+)$`)
+	re := regexp.MustCompile(`^([A-Za-z]+)/(\d+)/v/(\d.+)$`)
 
 	if re.MatchString(input) {
 		action := re.FindStringSubmatch(input)[1]
