@@ -26,7 +26,7 @@ func InitialiseFolderWatcher() {
 	}
 
 	// Ensure replays folder exists under dir
-	replaysDir := filepath.Join(dir, "replays")
+	replaysDir := dir
 	if _, err := os.Stat(replaysDir); os.IsNotExist(err) {
 		os.Mkdir(replaysDir, os.ModePerm)
 	}
@@ -44,7 +44,7 @@ func InitialiseFolderWatcher() {
 			prefix = "campaign-"
 		}
 
-		newPath := filepath.Join(dir, "replays", fmt.Sprintf("saved-%sreplay-%d%s", prefix, time.Now().UnixNano(), ext))
+		newPath := filepath.Join(dir, fmt.Sprintf("saved-%sreplay-%d%s", prefix, time.Now().UnixNano(), ext))
 		return os.Rename(path, newPath)
 	}
 

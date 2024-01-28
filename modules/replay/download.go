@@ -15,7 +15,7 @@ import (
 func Download(id string) string {
 	user := utils.GetUsername()
 	fileName := fmt.Sprintf("downloaded-replay-%s.rec", id)
-	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback", "replays")
+	replayDir := filepath.Join(user, "Documents", "My Games", "Company of Heroes 3", "playback")
 
 	// If another replay with the same id exists, play it instead of downloading it again
 	files, err := os.ReadDir(replayDir)
