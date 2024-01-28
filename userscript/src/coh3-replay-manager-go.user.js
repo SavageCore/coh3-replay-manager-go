@@ -61,13 +61,11 @@ const addPlayButtons = () => {
 
         playButton.addEventListener('click', e => {
             e.preventDefault();
-            console.log('Play clicked');
             window.location.href = `coh3-replay-manager-go://play/${replayId}/v/${gameVersion}`;
         });
 
         downloadButton.addEventListener('click', e => {
             e.preventDefault();
-            console.log('Download clicked');
             window.location.href = `coh3-replay-manager-go://download/${replayId}/v/${gameVersion}`;
         });
 
