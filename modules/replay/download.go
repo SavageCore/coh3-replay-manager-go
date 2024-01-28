@@ -34,7 +34,7 @@ func Download(id string) string {
 
 	// Proceed with the download
 	filePath := filepath.Join(replayDir, fileName)
-	url := fmt.Sprintf("https://cohdb.com/replays/%s/download", id)
+	url := fmt.Sprintf("https://cohdb.com/replays/%s/file", id)
 
 	// Create the file
 	file, err := os.Create(filePath)
